@@ -1,0 +1,13 @@
+{
+  "name": "huaweicloud_iot_device_sdk_arkts",
+  "version": "0.0.1",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@ohos/hypium": "1.0.6"
+  }
+}
