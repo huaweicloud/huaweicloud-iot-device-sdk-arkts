@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "huaweicloud_iot_device_library",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}
