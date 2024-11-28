@@ -1,17 +1,58 @@
+import { IoTDevice } from 'huaweicloud_iot_device_library';
+import { LogUtil } from './utils/LogUtil';
+
+const TAG: string = "Login"
+
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World'
+  pageInfos: NavPathStack = new NavPathStack();
+  private device: IoTDevice | null = null;
+  @State serverUri: string = "";
+  @State deviceId: string = "";
+  @State deviceSecret: string = "";
 
   build() {
-    Row() {
+    Navigation(this.pageInfos) {
       Column() {
-        Text(this.message)
-          .fontSize(50)
-          .fontWeight(FontWeight.Bold)
+        TextInput({ placeholder: $r('app.string.input_serverUri_placeholder') })
+          .margin({ top: 20 })
+          .onChange((value: string) => {
+            this.serverUri = value;
+          })
+        TextInput({ placeholder: $r('app.string.input_deviceId_placeholder') })
+          .margin({ top: 20 })
+          .onChange((value: string) => {
+            this.deviceId = value;
+          })
+        TextInput({ placeholder: $r('app.string.input_secret_placeholder')})
+          .type(InputType.Password)
+          .margin({ top: 20 })
+          .onChange((value: string) => {
+            this.deviceSecret = value;
+          })
+        Button($r('app.string.iotda_connect'))
+          .width(300)
+          .margin({ top: 20 })
+          .onClick(async () => {
+            LogUtil.debug(TAG, "click mqtt connect button");
+            if (this.device?.client && await this.device.client.isConnected()) {
+              LogUtil.info(TAG, "mqtt is connected");
+              this.pageInfos.pushPathByName("mqttConnectSuccess", this.device);
+              return;
+            }
+            this.device = new IoTDevice(this.serverUri, this.deviceId, this.deviceSecret);
+            this.device.init().then(async (data: boolean) => {
+              LogUtil.info(TAG, `mqtt connect result is ${data}`);
+              if (await this.device?.client.isConnected()) {
+                this.pageInfos.pushPathByName("mqttConnectSuccess", this.device);
+              }
+            }).catch((err: string) => {
+              LogUtil.error(TAG, `mqtt connect failed ${JSON.stringify(err)}`);
+            })
+          })
       }
-      .width('100%')
     }
-    .height('100%')
+    .title($r('app.string.iotda_title'))
   }
 }

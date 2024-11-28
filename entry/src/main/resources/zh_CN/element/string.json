@@ -10,23 +10,99 @@
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "IoTDA MQTT"
     },
     {
-      "name": "EntryFormAbility_desc",
-      "value": "form_description"
+      "name": "iotda_title",
+      "value": "华为云设备接入"
     },
     {
-      "name": "EntryFormAbility_label",
-      "value": "form_label"
+      "name": "iotda_connect",
+      "value": "连接平台"
     },
     {
-      "name": "title_immersive",
-      "value": "今日美食推荐"
+      "name": "input_secret_placeholder",
+      "value": "请输入设备密钥"
     },
     {
-      "name": "detail_immersive",
-      "value": "一碗香喷喷的炸酱面，回到儿时的青涩回忆"
+      "name": "input_deviceId_placeholder",
+      "value": "请输入设备ID"
+    },
+    {
+      "name": "input_serverUri_placeholder",
+      "value": "请输入连接地址及端口"
+    },
+    {
+      "name": "connect_success_title",
+      "value": "设备连接成功，接下来您可以体验一下场景"
+    },
+    {
+      "name": "property",
+      "value": "属性"
+    },
+    {
+      "name": "message",
+      "value": "消息"
+    },
+    {
+      "name": "command",
+      "value": "命令"
+    },
+    {
+      "name": "disconnect",
+      "value": "断开连接"
+    },
+    {
+      "name": "try_property_title",
+      "value": "体验设备属性场景"
+    },
+    {
+      "name": "input_property_placeholder",
+      "value": "输入设备属性"
+    },
+    {
+      "name": "report_property",
+      "value": "上报属性"
+    },
+    {
+      "name": "property_sample",
+      "value": "属性示例"
+    },
+    {
+      "name": "try_message_title",
+      "value": "体验消息场景"
+    },
+    {
+      "name": "input_message_placeholder",
+      "value": "输入消息"
+    },
+    {
+      "name": "report_system_topic_message",
+      "value": "上报消息（系统Topic）"
+    },
+    {
+      "name": "report_custom_topic_message",
+      "value": "上报消息（完全自定义Topic）"
+    },
+    {
+      "name": "report_custom_oc_topic_message",
+      "value": "上报消息（自定义OC Topic）"
+    },
+    {
+      "name": "message_sample",
+      "value": "消息示例"
+    },
+    {
+      "name": "try_command_title",
+      "value": "体验命令场景"
+    },
+    {
+      "name": "set_command_listener",
+      "value": "设置命令监听"
+    },
+    {
+      "name": "command_sample",
+      "value": "命令示例"
     }
   ]
 }
