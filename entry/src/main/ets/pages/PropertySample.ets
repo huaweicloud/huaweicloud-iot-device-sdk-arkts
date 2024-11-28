@@ -19,10 +19,10 @@ struct PropertySample {
   build() {
     NavDestination() {
       Column({ space: COLUMN_SPACE }) {
-        Text("体验设备属性场景")
+        Text($r('app.string.try_property_title'))
           .margin({ top: 20 })
           .width(300)
-        TextArea({ placeholder: "input the properties", text: JSON.stringify(this.getDefaultProperties()) })
+        TextArea({ placeholder: $r('app.string.input_property_placeholder'), text: JSON.stringify(this.getDefaultProperties()) })
           .margin({ top: 20 })
           .width(300)
           .height(200)
@@ -30,7 +30,7 @@ struct PropertySample {
             this.properties = value;
           })
 
-        Button("上报属性")
+        Button($r('app.string.report_property'))
           .width(300)
           .margin({ top: 20 })
           .onClick(async () => {
@@ -51,7 +51,7 @@ struct PropertySample {
           })
       }
     }
-    .title("属性示例")
+    .title($r('app.string.property_sample') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("propertySample")[0] as IoTDevice;

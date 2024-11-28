@@ -51,6 +51,58 @@
     {
       "name": "disconnect",
       "value": "Disconnect"
+    },
+    {
+      "name": "try_property_title",
+      "value": "Try Property"
+    },
+    {
+      "name": "input_property_placeholder",
+      "value": "input the properties"
+    },
+    {
+      "name": "report_property",
+      "value": "Report Property"
+    },
+    {
+      "name": "property_sample",
+      "value": "Property Sample"
+    },
+    {
+      "name": "try_message_title",
+      "value": "Try Message"
+    },
+    {
+      "name": "input_message_placeholder",
+      "value": "input the message"
+    },
+    {
+      "name": "report_system_topic_message",
+      "value": "Report Message（System Topic）"
+    },
+    {
+      "name": "report_custom_topic_message",
+      "value": "Report Message(Custom Topic)"
+    },
+    {
+      "name": "report_custom_oc_topic_message",
+      "value": "Report Message(Custom OC Topic)"
+    },
+    {
+      "name": "message_sample",
+      "value": "Message Sample"
+    },
+    {
+      "name": "try_command_title",
+      "value": "Try Command"
+    },
+    {
+      "name": "set_command_listener",
+      "value": "Set Command Listener"
+    },
+    {
+      "name": "command_sample",
+      "value": "Command Sample"
     }
   ]
 }

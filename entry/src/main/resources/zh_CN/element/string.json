@@ -51,6 +51,58 @@
     {
       "name": "disconnect",
       "value": "断开连接"
+    },
+    {
+      "name": "try_property_title",
+      "value": "体验设备属性场景"
+    },
+    {
+      "name": "input_property_placeholder",
+      "value": "输入设备属性"
+    },
+    {
+      "name": "report_property",
+      "value": "上报属性"
+    },
+    {
+      "name": "property_sample",
+      "value": "属性示例"
+    },
+    {
+      "name": "try_message_title",
+      "value": "体验消息场景"
+    },
+    {
+      "name": "input_message_placeholder",
+      "value": "输入消息"
+    },
+    {
+      "name": "report_system_topic_message",
+      "value": "上报消息（系统Topic）"
+    },
+    {
+      "name": "report_custom_topic_message",
+      "value": "上报消息（完全自定义Topic）"
+    },
+    {
+      "name": "report_custom_oc_topic_message",
+      "value": "上报消息（自定义OC Topic）"
+    },
+    {
+      "name": "message_sample",
+      "value": "消息示例"
+    },
+    {
+      "name": "try_command_title",
+      "value": "体验命令场景"
+    },
+    {
+      "name": "set_command_listener",
+      "value": "设置命令监听"
+    },
+    {
+      "name": "command_sample",
+      "value": "命令示例"
     }
   ]
 }

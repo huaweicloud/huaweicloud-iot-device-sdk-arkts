@@ -20,10 +20,10 @@ struct MessageSample {
   build() {
     NavDestination() {
       Column({ space: COLUMN_SPACE }) {
-        Text("体验设备消息场景")
+        Text($r('app.string.try_message_title'))
           .margin({ top: 20 })
           .width(300)
-        TextArea({ placeholder: "input the message", text: "this is message" })
+        TextArea({ placeholder: $r('app.string.input_message_placeholder'), text: "this is message" })
           .margin({ top: 20 })
           .width(300)
           .height(200)
@@ -31,7 +31,7 @@ struct MessageSample {
             this.message = value;
           })
 
-        Button("上报消息（系统Topic）")
+        Button($r('app.string.report_system_topic_message'))
           .width(300)
           .margin({ top: 20 })
           .onClick(async () => {
@@ -51,7 +51,7 @@ struct MessageSample {
               })
           })
 
-        Button("上报消息（完全自定义Topic）")
+        Button($r('app.string.report_custom_topic_message'))
           .width(300)
           .margin({ top: 20 })
           .onClick(async () => {
@@ -84,7 +84,7 @@ struct MessageSample {
             })
           })
 
-        Button("上报消息（自定义OC Topic）")
+        Button($r('app.string.report_custom_oc_topic_message'))
           .width(300)
           .margin({ top: 20 })
           .onClick(async () => {
@@ -120,7 +120,7 @@ struct MessageSample {
       .height('100%')
       .width('100%')
     }
-    .title("消息示例")
+    .title($r('app.string.message_sample') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("messageSample")[0] as IoTDevice;

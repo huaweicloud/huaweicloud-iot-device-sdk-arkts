@@ -18,11 +18,11 @@ struct CommandSample {
   build() {
     NavDestination() {
       Column({ space: COLUMN_SPACE }) {
-        Text("体验设备命令场景")
+        Text($r('app.string.try_command_title'))
           .margin({ top: 20 })
           .width(300)
 
-        Button("设置命令监听")
+        Button($r('app.string.set_command_listener'))
           .width(300)
           .margin({ top: 20 })
           .onClick(async () => {
@@ -56,7 +56,7 @@ struct CommandSample {
       .height('100%')
       .width('100%')
     }
-    .title("命令示例")
+    .title($r('app.string.command_sample') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("commandSample")[0] as IoTDevice;
