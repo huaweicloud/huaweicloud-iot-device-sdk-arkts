@@ -1,0 +1,13 @@
+{
+  "module": {
+    "name": "huaweicloud_iot_device_library_test",
+    "type": "feature",
+    "deviceTypes": [
+      "default",
+      "tablet",
+      "2in1"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false
+  }
+}
