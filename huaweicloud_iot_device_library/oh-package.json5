@@ -2,8 +2,11 @@
   "name": "huaweicloud_iot_device_library",
   "version": "0.0.1",
   "description": "Please describe the basic information.",
-  "main": "index.ets",
+  "main": "Index.ets",
   "author": "",
   "license": "Apache-2.0",
-  "dependencies": {}
+  "dependencies": {
+    "@ohos/mqtt": "^2.0.14",
+    "@ohos/crypto-js": "^2.0.4"
+  }
 }
