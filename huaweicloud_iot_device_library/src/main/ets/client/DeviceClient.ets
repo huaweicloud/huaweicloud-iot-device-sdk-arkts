@@ -281,6 +281,13 @@ export class DeviceClient {
     return this.mqttClient.disconnect();
   }
 
+  destroy(): Promise<boolean> {
+    if (!this.mqttClient) {
+      return new Promise<boolean>((resolve, reject) => reject("mqtt client is null"));
+    }
+    return this.mqttClient.destroy();
+  }
+
   isConnected(): Promise<boolean> {
     if (!this.mqttClient) {
       return new Promise<boolean>((resolve, reject) => resolve(false));

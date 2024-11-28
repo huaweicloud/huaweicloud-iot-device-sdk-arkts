@@ -49,11 +49,12 @@ struct MqttConnectSuccess {
               return;
             }
             await this.device?.client.disconnect();
+            await this.device?.client.destroy();
             this.pageInfos.clear();
           })
       }
     }
-    .title("连接成功")
+    .title($r('app.string.connect_success_title') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("mqttConnectSuccess")[0] as IoTDevice;
