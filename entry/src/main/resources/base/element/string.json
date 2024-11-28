@@ -10,23 +10,47 @@
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "IoTDA MQTT"
     },
     {
-      "name": "EntryFormAbility_desc",
-      "value": "form_description"
+      "name": "iotda_title",
+      "value": "IoTDA"
     },
     {
-      "name": "EntryFormAbility_label",
-      "value": "form_label"
+      "name": "iotda_connect",
+      "value": "Connect"
     },
     {
-      "name": "title_immersive",
-      "value": "Today's delicious food"
+      "name": "input_secret_placeholder",
+      "value": "input your device secret"
     },
     {
-      "name": "detail_immersive",
-      "value": "A bowl of fragrant fried noodles, back to childhood memories"
+      "name": "input_deviceId_placeholder",
+      "value": "input your deviceId"
+    },
+    {
+      "name": "input_serverUri_placeholder",
+      "value": "input your serverUri"
+    },
+    {
+      "name": "connect_success_title",
+      "value": "Connect Success"
+    },
+    {
+      "name": "property",
+      "value": "Property"
+    },
+    {
+      "name": "message",
+      "value": "Message"
+    },
+    {
+      "name": "command",
+      "value": "Command"
+    },
+    {
+      "name": "disconnect",
+      "value": "Disconnect"
     }
   ]
 }

@@ -5,6 +5,8 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {}
+  "dependencies": {
+    "huaweicloud_iot_device_library": "file:../huaweicloud_iot_device_library"
+  }
 }
 

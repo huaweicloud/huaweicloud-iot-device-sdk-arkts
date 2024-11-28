@@ -1,0 +1,36 @@
+{
+  "routerMap": [
+    {
+      "name": "mqttConnectSuccess",
+      "pageSourceFile": "src/main/ets/pages/MqttConnectSuccess.ets",
+      "buildFunction": "MqttConnectSuccessBuilder",
+      "data": {
+        "description": "Mqtt Connect Success Page"
+      }
+    },
+    {
+      "name": "propertySample",
+      "pageSourceFile": "src/main/ets/pages/PropertySample.ets",
+      "buildFunction": "PropertySampleBuilder",
+      "data": {
+        "description": "Property Sample"
+      }
+    },
+    {
+      "name": "messageSample",
+      "pageSourceFile": "src/main/ets/pages/MessageSample.ets",
+      "buildFunction": "MessageSampleBuilder",
+      "data": {
+        "description": "Message Sample"
+      }
+    },
+    {
+      "name": "commandSample",
+      "pageSourceFile": "src/main/ets/pages/CommandSample.ets",
+      "buildFunction": "CommandSampleBuilder",
+      "data": {
+        "description": "Command Sample"
+      }
+    }
+  ]
+}
