@@ -36,7 +36,6 @@ struct PropertySample {
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               LogUtil.info(TAG, "mqtt not connect")
-              // this.pageInfos.clear();
               return;
             }
             this.setPropertyListener();
@@ -45,13 +44,12 @@ struct PropertySample {
               .then((data: IoTMqttResponse) => {
                 LogUtil.info(TAG, `report properties success ${JSON.stringify(data)}`);
               })
-              .catch((error: IoTMqttResponse) => {
+              .catch((error: IoTMqttResponse | string) => {
                 LogUtil.error(TAG, `report properties failed ${JSON.stringify(error)}`);
               })
           })
       }
     }
-    .title($r('app.string.property_sample') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("propertySample")[0] as IoTDevice;

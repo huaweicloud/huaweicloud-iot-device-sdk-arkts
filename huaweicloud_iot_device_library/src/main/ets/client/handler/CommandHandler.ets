@@ -1,6 +1,6 @@
 import { Command } from "../../requests/Command";
 import { RawMessage } from "../../requests/RawMessage";
-import { IotUtil } from "../../utils/IotUtil";
+import { IoTUtil } from "../../utils/IoTUtil";
 import { DeviceClient } from "../DeviceClient";
 import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
@@ -14,7 +14,7 @@ export class CommandHandler implements MessageReceivedHandler {
 
 
     messageHandler(message: RawMessage): void {
-        const requestId = IotUtil.getRequestId(message.topic);
+        const requestId = IoTUtil.getRequestId(message.topic);
 
         try {
             const command: Command = JSON.parse(message.payload);

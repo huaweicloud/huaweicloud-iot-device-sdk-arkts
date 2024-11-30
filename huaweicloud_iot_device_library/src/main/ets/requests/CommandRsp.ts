@@ -16,7 +16,7 @@ export interface CommandRsp {
   /**
    * 命令的响应参数，具体字段在设备关联的产品模型中定义。可选
    */
-  paras?: object;
+  paras?: Object;
 
 
 }
