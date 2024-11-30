@@ -39,6 +39,18 @@ struct MqttConnectSuccess {
           .onClick(async () => {
             this.pageInfos.pushPathByName("commandSample", this.device);
           })
+        Button($r('app.string.shadow'))
+          .width(300)
+          .margin({ top: 20 })
+          .onClick(async () => {
+            this.pageInfos.pushPathByName("shadowSample", this.device);
+          })
+        Button($r('app.string.profile'))
+          .width(300)
+          .margin({ top: 20 })
+          .onClick(async () => {
+            this.pageInfos.pushPathByName("profileSample", this.device);
+          })
         Button($r('app.string.disconnect'))
           .width(300)
           .margin({ top: 20 })
@@ -54,7 +66,7 @@ struct MqttConnectSuccess {
           })
       }
     }
-    .title($r('app.string.connect_success_title') + "")
+    .hideTitleBar(true)
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("mqttConnectSuccess")[0] as IoTDevice;

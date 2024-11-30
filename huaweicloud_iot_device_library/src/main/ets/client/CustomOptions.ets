@@ -1,4 +1,4 @@
-import { IotUtil } from "../utils/IotUtil";
+import { IoTUtil } from "../utils/IoTUtil";
 import { CustomBackoffHandler } from "./handler/CustomBackoffHandler";
 
 /**
@@ -21,7 +21,7 @@ export class CustomOptions {
   /**
    * 退避系数， 默认为1000，单位毫秒
    */
-  private _backoff: number = IotUtil.DEFAULT_BACKOFF;
+  private _backoff: number = IoTUtil.DEFAULT_BACKOFF;
 
   public set backoff(value: number) {
     this._backoff = value;
@@ -34,7 +34,7 @@ export class CustomOptions {
   /**
    * 最小重连时间，默认为1000，单位毫秒
    */
-  private _minBackoff: number = IotUtil.MIN_BACKOFF;
+  private _minBackoff: number = IoTUtil.MIN_BACKOFF;
 
   public set minBackoff(value: number) {
     this._minBackoff = value;
@@ -47,7 +47,7 @@ export class CustomOptions {
   /**
    * 最大重连时间，默认为30 * 1000，单位毫秒
    */
-  private _maxBackoff: number = IotUtil.MAX_BACKOFF;
+  private _maxBackoff: number = IoTUtil.MAX_BACKOFF;
 
   public set maxBackoff(value: number) {
     this._maxBackoff = value;
