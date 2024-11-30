@@ -1,6 +1,6 @@
 import { PropsSet } from "../../requests/PropsSet";
 import { RawMessage } from "../../requests/RawMessage";
-import { IotUtil } from "../../utils/IotUtil";
+import { IoTUtil } from "../../utils/IoTUtil";
 import { DeviceClient } from "../DeviceClient";
 import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
@@ -14,7 +14,7 @@ export class PropertySetHandler implements MessageReceivedHandler {
   }
 
   messageHandler(message: RawMessage): void {
-    const requestId = IotUtil.getRequestId(message.topic);
+    const requestId = IoTUtil.getRequestId(message.topic);
     try {
       const propsSet: PropsSet = JSON.parse(message.payload);
       const propertyListener = this.deviceClient.propertyListener;

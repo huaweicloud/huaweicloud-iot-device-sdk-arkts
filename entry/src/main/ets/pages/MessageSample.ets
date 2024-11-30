@@ -1,4 +1,8 @@
 import { IoTDevice, IoTMqttResponse, RawMessageListener, DeviceMessage, RawMessage } from 'huaweicloud_iot_device_library';
+import {
+  RawDeviceMessageListener
+} from 'huaweicloud_iot_device_library/src/main/ets/client/listener/RawDeviceMessageListener';
+import { RawDeviceMessage } from 'huaweicloud_iot_device_library/src/main/ets/requests/RawDeviceMessage';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder
@@ -37,16 +41,24 @@ struct MessageSample {
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               LogUtil.info(TAG, "mqtt not connect")
-              // this.pageInfos.clear();
               return;
             }
 
+            // 设置系统topic消息的监听处理
+            let rawDeviceMessageListener: RawDeviceMessageListener = {
+              onRawDeviceMessage: (rawDeviceMessage: RawDeviceMessage): void => {
+                LogUtil.info(TAG, `reveived device message is ${JSON.stringify(rawDeviceMessage)}`);
+              }
+            }
+            this.device.client.rawDeviceMessageListener = rawDeviceMessageListener;
+
+            // 上报系统topic的消息
             const reportMessage: DeviceMessage = { content: this.message }
             this.device.client.reportDeviceMessage(reportMessage)
               .then((data: IoTMqttResponse) => {
                 LogUtil.info(TAG, `report deviceMessage success ${JSON.stringify(data)}`);
               })
-              .catch((error: IoTMqttResponse) => {
+              .catch((error: IoTMqttResponse | string) => {
                 LogUtil.error(TAG, `report deviceMessage failed ${JSON.stringify(error)}`);
               })
           })
@@ -72,7 +84,7 @@ struct MessageSample {
               payload: this.message
             }
             if (this.isSubscribeHelloWorldTopic) {
-              this.device?.client.publishRawMessage((rawMessage));
+              await this.device?.client.publishRawMessage((rawMessage));
               return;
             }
             this.device.client.subscribeTopic(topic, rawMessageListener).then((data: IoTMqttResponse) => {
@@ -105,7 +117,7 @@ struct MessageSample {
               payload: this.message
             }
             if (this.isSubscribeOCTopic) {
-              this.device?.client.publishRawMessage((rawMessage));
+              await this.device?.client.publishRawMessage((rawMessage));
               return;
             }
             this.device.client.subscribeTopic(topic, rawMessageListener).then((data: IoTMqttResponse) => {
@@ -120,7 +132,6 @@ struct MessageSample {
       .height('100%')
       .width('100%')
     }
-    .title($r('app.string.message_sample') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("messageSample")[0] as IoTDevice;

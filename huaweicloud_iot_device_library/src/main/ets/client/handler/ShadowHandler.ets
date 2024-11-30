@@ -1,6 +1,6 @@
 import { RawMessage } from "../../requests/RawMessage";
 import { Shadow } from "../../requests/Shadow";
-import { IotUtil } from "../../utils/IotUtil";
+import { IoTUtil } from "../../utils/IoTUtil";
 import { DeviceClient } from "../DeviceClient";
 import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
@@ -14,7 +14,7 @@ export class ShadowHandler implements MessageReceivedHandler {
   }
 
   messageHandler(message: RawMessage): void {
-    const requestId = IotUtil.getRequestId(message.topic);
+    const requestId = IoTUtil.getRequestId(message.topic);
     try {
       const shadow: Shadow = JSON.parse(message.payload);
       const shadowListener = this.deviceClient.shadowListener;

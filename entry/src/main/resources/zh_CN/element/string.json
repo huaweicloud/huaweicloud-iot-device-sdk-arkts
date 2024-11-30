@@ -103,6 +103,30 @@
     {
       "name": "command_sample",
       "value": "命令示例"
+    },
+    {
+      "name": "profile",
+      "value": "物模型示例"
+    },
+    {
+      "name": "try_profile_title",
+      "value": "体验物模型"
+    },
+    {
+      "name": "set_profile",
+      "value": "设置物模型并自动上报"
+    },
+    {
+      "name": "set_shadow_listener",
+      "value": "设置影子监听器并获取影子数据"
+    },
+    {
+      "name": "try_shadow_title",
+      "value": "体验影子示例"
+    },
+    {
+      "name": "shadow",
+      "value": "影子"
     }
   ]
 }

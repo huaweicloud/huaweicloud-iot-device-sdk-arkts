@@ -28,7 +28,6 @@ struct CommandSample {
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               LogUtil.info(TAG, "mqtt not connect")
-              // this.pageInfos.clear();
               return;
             }
 
@@ -43,20 +42,17 @@ struct CommandSample {
                 }
                 this.device?.client.respondCommand(requestId, commandRsp).then((data: IoTMqttResponse) => {
                   LogUtil.info(TAG, `respond command success ${JSON.stringify(data)}` );
-                }).catch((err: IoTMqttResponse) => {
+                }).catch((err: IoTMqttResponse | string) => {
                   LogUtil.error(TAG, `respond command failed ${JSON.stringify(err)}`);
                 })
               }
             }
-            if (this.device !== null) {
-              this.device.client.commandListener = commandListener;
-            }
+            this.device.client.commandListener = commandListener;
           })
       }
       .height('100%')
       .width('100%')
     }
-    .title($r('app.string.command_sample') + "")
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("commandSample")[0] as IoTDevice;

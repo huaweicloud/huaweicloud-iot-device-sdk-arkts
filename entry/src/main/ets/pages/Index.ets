@@ -41,7 +41,9 @@ struct Index {
               this.pageInfos.pushPathByName("mqttConnectSuccess", this.device);
               return;
             }
-            this.device = new IoTDevice(this.serverUri, this.deviceId, this.deviceSecret);
+            // 证书文件放在resource/resfile下，连接华为云时请使用对应的证书。
+            this.device = new IoTDevice(this.serverUri, this.deviceId, this.deviceSecret, 'GlobalSign-rootca.pem');
+           
             this.device.init().then(async (data: boolean) => {
               LogUtil.info(TAG, `mqtt connect result is ${data}`);
               if (await this.device?.client.isConnected()) {

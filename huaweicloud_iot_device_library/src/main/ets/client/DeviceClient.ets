@@ -1,10 +1,9 @@
 import { ClientConf, IoTMqttQos } from "./ClinetConf";
 import { CommandListener } from "./listener/CommandListener";
-import { DeviceMessageListener } from "./listener/DeviceMessageListener";
 import { PropertyListener } from "./listener/PropertyListener";
 import { RawDeviceMessageListener } from "./listener/RawDeviceMessageListener";
 import { ShadowListener } from "./listener/ShadowListener";
-import { HashMap } from "@kit.ArkTS";
+import { HashMap, util } from "@kit.ArkTS";
 import { CustomOptions } from "./CustomOptions";
 import { AbstractDevice } from "../service/AbstractDevice";
 import { RawMessageListener } from "./listener/RawMessageListener";
@@ -18,7 +17,7 @@ import { PropertyGetHandler } from "./handler/PropertyGetHandler";
 import { ShadowResponseHandler } from "./handler/ShadowResponseHandler";
 import { EventDownHandler } from "./handler/EventDownHandler";
 import { ShadowHandler } from "./handler/ShadowHandler";
-import { IotUtil } from "../utils/IotUtil";
+import { IoTUtil } from "../utils/IoTUtil";
 import { RawMessage } from "../requests/RawMessage";
 import { DeviceEvent } from "../requests/DeviceEvent";
 import { IoTMqttResponse } from "./IoTMqttResponse";
@@ -30,6 +29,7 @@ import { DeviceEvents } from "../requests/DeviceEvents";
 import { CommandRsp } from "../requests/CommandRsp";
 import { DeviceProperties } from "../requests/DeviceProperties";
 import { IotResult } from "./IotResult";
+import { ShadowRequest } from "../requests/ShadowRequest";
 
 export class DeviceClient {
 
@@ -94,22 +94,6 @@ export class DeviceClient {
 
   public get shadowListener(): ShadowListener | null {
     return this._shadowListener;
-  }
-
-  private _deviceMessageListener: DeviceMessageListener | null = null;
-
-  /**
-   * 设置消息监听器，用于接收平台下发的消息
-   * 此监听器只能接收平台到直连设备的请求，子设备的请求由AbstractGateway处理
-   * @param deviceMessageListener 消息监听器
-   * @deprecated 该方法不能处理云端下发的任意格式的消息，请使用setRawDeviceMessageListener代替
-   */
-  public set deviceMessageListener(value: DeviceMessageListener | null) {
-    this._deviceMessageListener = value;
-  }
-
-  public get deviceMessageListener(): DeviceMessageListener | null {
-    return this._deviceMessageListener;
   }
 
   private _rawDeviceMessageListener: RawDeviceMessageListener | null = null;
@@ -231,7 +215,7 @@ export class DeviceClient {
 
   async connect(): Promise<boolean>{
     return new Promise(async (resolve, reject) => {
-      const timestamp = IotUtil.getTimestamp();
+      const timestamp = IoTUtil.getTimestamp();
       this.createMqtt(this.clientConf.serverUri, this.generateClientId(timestamp))
       if (this.mqttClient === null) {
         reject("mqttClient is null");
@@ -440,6 +424,22 @@ export class DeviceClient {
       topic: topic,
       qos: qos,
       payload: JSON.stringify(iotResult)
+    }
+    return this.publish(publishOption);
+  }
+
+  /**
+   * 获取设备影子
+   *
+   * @param shadowRequest 请求设备影子参数
+   * @param listener      发布监听器
+   */
+  getShadow(shadowRequest: ShadowRequest, qos: IoTMqttQos = 0) {
+    const topic =  `$oc/devices/${this.clientConf.deviceId}/sys/shadow/get/request_id=${util.generateRandomUUID()}}`;
+    const publishOption: IoTMqttPublishOptions = {
+      topic: topic,
+      qos: qos,
+      payload: JSON.stringify(shadowRequest)
     }
     return this.publish(publishOption);
   }

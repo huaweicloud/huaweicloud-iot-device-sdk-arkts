@@ -103,6 +103,30 @@
     {
       "name": "command_sample",
       "value": "Command Sample"
+    },
+    {
+      "name": "profile",
+      "value": "Profile"
+    },
+    {
+      "name": "try_profile_title",
+      "value": "Try Profile"
+    },
+    {
+      "name": "set_profile",
+      "value": "Set Profile"
+    },
+    {
+      "name": "set_shadow_listener",
+      "value": "Set Shadow Listener & Get Shadow"
+    },
+    {
+      "name": "try_shadow_title",
+      "value": "Try Shadow"
+    },
+    {
+      "name": "shadow",
+      "value": "Shadow"
     }
   ]
 }
