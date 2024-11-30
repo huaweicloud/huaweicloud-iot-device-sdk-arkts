@@ -12,7 +12,6 @@ export class CommandHandler implements MessageReceivedHandler {
     this.deviceClient = deviceClient;
   }
 
-
   messageHandler(message: RawMessage): void {
     const requestId = IoTUtil.getRequestId(message.topic);
 

@@ -119,7 +119,6 @@ export class AbstractDevice {
    */
   public onPropertiesSet(requestId: string, propsSet: PropsSet): void {
     let ret = IotResult.SUCCESS;
-    ;
     propsSet.services.every((serviceProp) => {
       const deviceService = this.getService(serviceProp.service_id);
 

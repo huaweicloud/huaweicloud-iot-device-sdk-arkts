@@ -33,5 +33,4 @@ export class IoTUtil {
     })
     return jsonObject;
   }
-
 }
