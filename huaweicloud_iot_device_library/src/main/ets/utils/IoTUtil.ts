@@ -1,7 +1,4 @@
-import { HashMap } from "@kit.ArkTS";
-
 export class IoTUtil {
-
   static readonly DEFAULT_BACKOFF = 1000;
 
   static readonly MIN_BACKOFF = 1000;
@@ -27,13 +24,14 @@ export class IoTUtil {
     return `${(new Date()).toISOString().replace(/[-:]/g, "").substring(0, 15)}Z`;
   }
 
-  public static mapToJson(map: Map<string, Object> | HashMap<string, Object>) {
+  public static mapToJson(map: Map<string, Object>) {
     let jsonObject: Record<string, Object> = {};
-    map.forEach((value, key)=> {
+    map.forEach((value, key) => {
       if (key !== undefined && value !== undefined) {
         jsonObject[key] = value;
       }
     })
     return jsonObject;
   }
+
 }

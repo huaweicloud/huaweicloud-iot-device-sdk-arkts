@@ -1,6 +1,4 @@
-import { IoTDevice, IoTMqttResponse, CommandListener, CommandRsp,
-  AbstractService,
-  IotResult} from 'huaweicloud_iot_device_library';
+import { IoTDevice, CommandRsp, AbstractService, IotResult} from 'huaweicloud_iot_device_library';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder

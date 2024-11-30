@@ -59,7 +59,7 @@ await this.device.init();
 <h2  id  =  "3.1">3.1 自定义选项</h2>
 设备初始化前，可以通过CustomOptions类配置自定义断线重连、离线最大缓存消息数量、正在传输但还未收到确认的消息数量等功能。
 
-```java
+```arkts
 device.customOptions: CustomOptions = customOptions;
 // reConnect 是否使用内置的断线重连功能， 默认为true
 // customBackoffHandler 用户自定义断线重连功能，设置后，将覆盖内置的断线重连功能
@@ -73,7 +73,7 @@ device.customOptions: CustomOptions = customOptions;
 
 
 <h2  id  =  "3.2">3.2  断线重连</h2>
-在SDK中内置了一个断线重连，若需要自定义断线重连，可以重写SDK：com.huaweicloud.sdk.iot.device.client.handler.CustomBackoffHandler中backoffHandler方法。自定义断线重连可见demo：src/main/java/com/huaweicloud/sdk/iot/device/demo/device/connect/ReConnect.java。
+在SDK中内置了一个断线重连，若需要自定义断线重连，可以重写SDK：src/main/ets/client/handler/CustomBackoffHandler.ets中backoffHandler方法。自定义断线重连可见demo：src/main/ets/pages/ReConnectSample.ets。
 
 默认断线重连为每隔一段时间进行一次重连。主要参数如下，可以通过修改最大、最小重连间隔时间实现重连控制。
 
@@ -107,7 +107,7 @@ device.customOptions: CustomOptions = customOptions;
 
 - 上报自定topic消息（可用设备topic策略控制权限）
 
-  ```java
+  ```arkts
   const topic = "hello/world";
   const rawMessage: RawMessage = {
     topic: topic,

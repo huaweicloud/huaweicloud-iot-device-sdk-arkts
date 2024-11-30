@@ -10,8 +10,8 @@ import { PropsSet } from "../requests/PropsSet";
 import { ServiceProperty } from "../requests/ServiceProperty";
 import { Shadow } from "../requests/Shadow";
 import { IoTUtil } from "../utils/IoTUtil";
+import { LogUtil } from "../utils/LogUtil";
 import { AbstractService } from "./AbstractService";
-import { IService } from "./IService";
 
 export class AbstractDevice {
   private _client: DeviceClient;
@@ -65,7 +65,7 @@ export class AbstractDevice {
    * @param serviceId     服务id，要和设备模型定义一致
    * @param deviceService 服务实例
    */
-  public addService(serviceId: string, deviceService: AbstractService): void{
+  public addService(serviceId: string, deviceService: AbstractService): void {
 
     deviceService.iotDevice = this;
     deviceService.serviceId = serviceId;
@@ -94,11 +94,11 @@ export class AbstractDevice {
   }
 
   /**
-    * 命令回调函数，由SDK自动调用
-    *
-    * @param requestId 请求id
-    * @param command   命令
-    */
+   * 命令回调函数，由SDK自动调用
+   *
+   * @param requestId 请求id
+   * @param command   命令
+   */
   public onCommand(requestId: string, command: Command): void {
 
     const service = this.getService(command.service_id);
@@ -108,7 +108,7 @@ export class AbstractDevice {
       this.client.respondCommand(requestId, rsp);
       return;
     }
-    this.client?.respondCommand(requestId, {result_code: -1, paras: `service not found ${command.service_id}`})
+    this.client?.respondCommand(requestId, { result_code: -1, paras: `service not found ${command.service_id}` })
   }
 
   /**
@@ -117,8 +117,9 @@ export class AbstractDevice {
    * @param requestId 请求id
    * @param propsSet  属性设置请求
    */
-  public onPropertiesSet(requestId: string, propsSet: PropsSet): void{
-    let ret = IotResult.SUCCESS;;
+  public onPropertiesSet(requestId: string, propsSet: PropsSet): void {
+    let ret = IotResult.SUCCESS;
+    ;
     propsSet.services.every((serviceProp) => {
       const deviceService = this.getService(serviceProp.service_id);
 
@@ -223,9 +224,9 @@ export class AbstractDevice {
       event_time: IoTUtil.getEventTimestamp(),
     }
     this.client.reportProperties([serviceProperty]).then((data: IoTMqttResponse) => {
-      console.debug("report properties success ", JSON.stringify(data))
+      LogUtil.debug(`report properties success ${JSON.stringify(data)}`)
     }).catch((err: IoTMqttResponse | string) => {
-      console.error("report properties failed ", JSON.stringify(err))
+      LogUtil.error(`report properties failed ${JSON.stringify(err)}`)
     })
   }
 
@@ -238,8 +239,8 @@ export class AbstractDevice {
     const serviceProperties: ServiceProperty[] = [];
     serviceIds.forEach(serviceId => {
       const deviceService = this.getService(serviceId);
-      if (deviceService === null || deviceService === undefined ||  deviceService.serviceId === null) {
-        console.error("service not found: " + serviceId);
+      if (deviceService === null || deviceService === undefined || deviceService.serviceId === null) {
+        LogUtil.error(`service not found: ${serviceId}`);
         return;
       }
 
@@ -256,10 +257,9 @@ export class AbstractDevice {
       return;
     }
     this.client.reportProperties(serviceProperties).then((data: IoTMqttResponse) => {
-      console.debug("report properties success ", JSON.stringify(data))
+      LogUtil.debug(`report properties success ${JSON.stringify(data)}`)
     }).catch((err: IoTMqttResponse | string) => {
-      console.error("report properties failed ", JSON.stringify(err))
+      LogUtil.error(`report properties failed ${JSON.stringify(err)}`)
     })
   }
-
 }

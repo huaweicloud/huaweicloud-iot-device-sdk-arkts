@@ -127,6 +127,18 @@
     {
       "name": "shadow",
       "value": "影子"
+    },
+    {
+      "name": "try_reconnect_title",
+      "value": "体验断线重连"
+    },
+    {
+      "name": "set_reconnect_option",
+      "value": "设置断线重连配置"
+    },
+    {
+      "name": "reconnect",
+      "value": "断线重连"
     }
   ]
 }

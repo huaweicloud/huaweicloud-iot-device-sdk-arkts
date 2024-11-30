@@ -1,8 +1,6 @@
-import { IoTDevice, IoTMqttResponse, RawMessageListener, DeviceMessage, RawMessage } from 'huaweicloud_iot_device_library';
-import {
-  RawDeviceMessageListener
-} from 'huaweicloud_iot_device_library/src/main/ets/client/listener/RawDeviceMessageListener';
-import { RawDeviceMessage } from 'huaweicloud_iot_device_library/src/main/ets/requests/RawDeviceMessage';
+import { IoTDevice, IoTMqttResponse, RawMessageListener,
+  DeviceMessage, RawMessage, RawDeviceMessageListener, RawDeviceMessage
+} from 'huaweicloud_iot_device_library';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder

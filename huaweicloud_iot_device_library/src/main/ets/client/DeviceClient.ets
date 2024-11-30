@@ -3,7 +3,7 @@ import { CommandListener } from "./listener/CommandListener";
 import { PropertyListener } from "./listener/PropertyListener";
 import { RawDeviceMessageListener } from "./listener/RawDeviceMessageListener";
 import { ShadowListener } from "./listener/ShadowListener";
-import { HashMap, util } from "@kit.ArkTS";
+import { util } from "@kit.ArkTS";
 import { CustomOptions } from "./CustomOptions";
 import { AbstractDevice } from "../service/AbstractDevice";
 import { RawMessageListener } from "./listener/RawMessageListener";
@@ -30,6 +30,7 @@ import { CommandRsp } from "../requests/CommandRsp";
 import { DeviceProperties } from "../requests/DeviceProperties";
 import { IotResult } from "./IotResult";
 import { ShadowRequest } from "../requests/ShadowRequest";
+import { LogUtil } from "../utils/LogUtil";
 
 export class DeviceClient {
 
@@ -137,14 +138,14 @@ export class DeviceClient {
     return this._rawMessageListenerMap;
   }
 
-  private _functionMap: HashMap<string, MessageReceivedHandler> = new HashMap();
+  private _functionMap: Map<string, MessageReceivedHandler> = new Map();
 
   /**
    * 设置各类topic处理的handler
    *
    * @param functionMap 各类topic处理的handler
    */
-  public set functionMap(value: HashMap<string, MessageReceivedHandler>) {
+  public set functionMap(value: Map<string, MessageReceivedHandler>) {
     this._functionMap = value;
   }
 
@@ -153,7 +154,7 @@ export class DeviceClient {
    *
    * @return 各类topic处理的handler
    */
-  public get functionMap(): HashMap<string, MessageReceivedHandler> {
+  public get functionMap(): Map<string, MessageReceivedHandler> {
     return this._functionMap;
   }
 
@@ -239,7 +240,7 @@ export class DeviceClient {
           }
         }
         let result = await this.mqttClient.connect(options);
-        console.log("connect result is ", JSON.stringify(result));
+        LogUtil.log(`connect result is ${JSON.stringify(result)}`);
         if (await this.mqttClient.isConnected()) {
           // 监听接收消息
           this.messageArrived();
@@ -251,7 +252,7 @@ export class DeviceClient {
           return;
         }
       } catch (err) {
-        console.log("mqtt connect failed ", JSON.stringify(err))
+        LogUtil.log(`mqtt connect failed ${JSON.stringify(err)}`);
         reject(err);
         return;
       }
@@ -530,7 +531,7 @@ export class DeviceClient {
 
   private connectLost() {
     this.mqttClient?.connectLost(async (err: Error, data: IoTMqttResponse) => {
-      console.log("connection lost");
+      LogUtil.log("connection lost");
       if (this.connectionListener !== null) {
         this.connectionListener.connectionLost();
       }
@@ -553,7 +554,7 @@ export class DeviceClient {
     const waitTImeUntilNextRetry = this.getWaitTImeUntilNextRetry(retryTimes);
     await this.sleep(waitTImeUntilNextRetry);
     if (await this.mqttClient?.reconnect()) {
-      console.log("reconnect success");
+      LogUtil.log("reconnect success");
       return;
     }
     retryTimes++;

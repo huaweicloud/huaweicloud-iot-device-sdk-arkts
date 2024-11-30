@@ -6,6 +6,7 @@ import { AbstractDevice } from "./AbstractDevice";
 import { IService } from "./IService";
 import "reflect-metadata"
 import { IoTUtil } from "../utils/IoTUtil";
+import { LogUtil } from "../utils/LogUtil";
 
 export interface Property {
   name: string;
@@ -18,15 +19,10 @@ export interface DeviceCommand {
 }
 
 export abstract class AbstractService implements IService {
-
   private commands: Map<string, Function> = new Map();
-
   private writeableFields: Map<string, string> = new Map();
-
   private readableFields: Map<string, string> = new Map();
-
   private timer: number | null = null;
-
   private _serviceId: string | null = null;
 
   public set serviceId(value: string | null) {
@@ -65,9 +61,9 @@ export abstract class AbstractService implements IService {
       }
 
     })
-    console.debug("writeableFields is ", JSON.stringify(IoTUtil.mapToJson(this.writeableFields)));
-    console.debug("readableFields is ", JSON.stringify(IoTUtil.mapToJson(this.readableFields)));
-    console.debug("commands is ", JSON.stringify(IoTUtil.mapToJson(this.commands)));
+    LogUtil.debug(`writeableFields is ${JSON.stringify(IoTUtil.mapToJson(this.writeableFields))}`);
+    LogUtil.debug(`readableFields is ${JSON.stringify(IoTUtil.mapToJson(this.readableFields))}`);
+    LogUtil.debug(`commands is ${JSON.stringify(IoTUtil.mapToJson(this.commands))}`);
   }
 
 
@@ -78,7 +74,7 @@ export abstract class AbstractService implements IService {
    */
   public enableAutoReport(reportInterval: number): void {
     if (this.timer != null) {
-      console.error("timer is already enabled");
+      LogUtil.error("timer is already enabled");
       return;
     }
 
@@ -123,7 +119,7 @@ export abstract class AbstractService implements IService {
       fields.forEach(field => {
         const propertyName = this.readableFields.get(field);
         if (propertyName === null || propertyName === undefined) {
-          console.log("field is not readable ", field);
+          LogUtil.log(`field is not readable ${field}`);
           return;
         }
         const value = this.getFieldValue(field);
@@ -157,7 +153,7 @@ export abstract class AbstractService implements IService {
     Object.keys(properties).every((propertyName: string) => {
       const field = this.writeableFields.get(propertyName);
       if (field === null || field === undefined) {
-        console.error("field not found or not writeable ", propertyName);
+        LogUtil.error(`field not found or not writeable ${propertyName}` );
         result = {
           result_code: -1,
           result_desc: `"field not found or not writeable ${propertyName}`,
@@ -191,8 +187,8 @@ export abstract class AbstractService implements IService {
 
     try {
       return method(command.paras) as CommandRsp
-    } catch(e) {
-      console.error(`call command failed ${JSON.stringify(e)}`)
+    } catch (e) {
+      LogUtil.error(`call command failed ${JSON.stringify(e)}`)
       return {
         result_code: -1,
         paras: `call command failed ${JSON.stringify(e)}`
@@ -206,13 +202,13 @@ export abstract class AbstractService implements IService {
    * @param deviceEvent 服务事件
    */
   onEvent(deviceEvent: DeviceEvent): void {
-    console.log("onEvent")
+    LogUtil.log("onEvent")
   }
 
   private getFieldValue(field: string): Object | null {
     const propertyName = this.readableFields.get(field);
     if (!propertyName) {
-      console.log("propertyName does not exist ", field);
+      LogUtil.log(`propertyName does not exist ${field}}`);
       return null;
     }
     let getMethodName = field;
@@ -221,5 +217,4 @@ export abstract class AbstractService implements IService {
     }
     return Reflect.get(this, getMethodName) as Object;
   }
-
 }
