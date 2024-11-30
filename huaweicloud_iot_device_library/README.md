@@ -404,7 +404,7 @@ SDK的开源License类型为 [BSD 3-Clause License](https://opensource.org/licen
 ## 5. 如何贡献代码
 
 1、创建github账号
-2、fork huaweicloud-iot-device-sdk-java源代码
-3、同步huaweicloud-iot-device-sdk-java主仓库代码到fork的仓库
+2、fork huaweicloud-iot-device-sdk-arkts源代码
+3、同步huaweicloud-iot-device-sdk-arkts主仓库代码到fork的仓库
 4、在本地修改代码并push到fork的仓库
 5、在fork的仓库提交pull request到主仓库
