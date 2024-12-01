@@ -1,12 +1,12 @@
 import { RawMessage } from "../../requests/RawMessage";
 import { Shadow } from "../../requests/Shadow";
 import { IoTUtil } from "../../utils/IoTUtil";
+import { LogUtil } from "../../utils/LogUtil";
 import { DeviceClient } from "../DeviceClient";
 import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
 
 export class ShadowHandler implements MessageReceivedHandler {
-
   private deviceClient: DeviceClient;
 
   constructor(deviceClient: DeviceClient) {
@@ -26,10 +26,9 @@ export class ShadowHandler implements MessageReceivedHandler {
 
       this.deviceClient.device.onShadow(requestId, shadow);
     } catch (e) {
-      console.error("invalid shadow");
+      LogUtil.error("invalid shadow");
       return;
     }
 
   }
-
 }

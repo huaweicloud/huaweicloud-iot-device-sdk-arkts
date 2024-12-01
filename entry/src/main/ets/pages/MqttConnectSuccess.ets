@@ -51,6 +51,12 @@ struct MqttConnectSuccess {
           .onClick(async () => {
             this.pageInfos.pushPathByName("profileSample", this.device);
           })
+        Button($r('app.string.reconnect'))
+          .width(300)
+          .margin({ top: 20 })
+          .onClick(async () => {
+            this.pageInfos.pushPathByName("reConnectSample", this.device);
+          })
         Button($r('app.string.disconnect'))
           .width(300)
           .margin({ top: 20 })

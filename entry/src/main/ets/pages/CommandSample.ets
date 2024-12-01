@@ -8,11 +8,11 @@ export function CommandSampleBuilder(name: string, para: object) {
 
 const COLUMN_SPACE: number = 12;
 const TAG: string = "CommandSample";
+
 @Component
 struct CommandSample {
   pageInfos: NavPathStack = new NavPathStack();
   private device: IoTDevice | null = null;
-
   @State commandArr: string[] = [];
 
   build() {
@@ -33,7 +33,8 @@ struct CommandSample {
 
             let commandListener: CommandListener = {
               onCommand: (requestId: string, serviceId: string, commandName: string, paras: object): void => {
-                const command = `requestId is ${requestId}, serviceId is ${serviceId}, commandName is ${commandName}, paras is ${JSON.stringify(paras)}`;
+                const command =
+                  `requestId is ${requestId}, serviceId is ${serviceId}, commandName is ${commandName}, paras is ${JSON.stringify(paras)}`;
                 LogUtil.info(TAG, `received command is ${command}`);
                 // 用户可以在该处进行命令处理
 
@@ -41,7 +42,7 @@ struct CommandSample {
                   result_code: 0
                 }
                 this.device?.client.respondCommand(requestId, commandRsp).then((data: IoTMqttResponse) => {
-                  LogUtil.info(TAG, `respond command success ${JSON.stringify(data)}` );
+                  LogUtil.info(TAG, `respond command success ${JSON.stringify(data)}`);
                 }).catch((err: IoTMqttResponse | string) => {
                   LogUtil.error(TAG, `respond command failed ${JSON.stringify(err)}`);
                 })
@@ -58,5 +59,4 @@ struct CommandSample {
       this.device = this.pageInfos.getParamByName("commandSample")[0] as IoTDevice;
     })
   }
-
 }

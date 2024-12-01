@@ -1,5 +1,11 @@
 export interface ShadowRequest {
-  object_device_id: string;
+  /**
+   * 设备ID
+   */
+  object_device_id?: string;
 
-  service_id: string;
+  /**
+   * 服务ID，不携带时查询所有
+   */
+  service_id?: string;
 }

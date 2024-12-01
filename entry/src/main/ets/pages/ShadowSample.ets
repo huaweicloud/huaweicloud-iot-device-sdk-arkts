@@ -1,5 +1,10 @@
-import { IoTDevice, IoTMqttResponse, ShadowListener, ShadowRequest,
-  ShadowData } from 'huaweicloud_iot_device_library';
+import {
+  IoTDevice,
+  IoTMqttResponse,
+  ShadowListener,
+  ShadowRequest,
+  ShadowData
+} from 'huaweicloud_iot_device_library';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder
@@ -9,6 +14,7 @@ export function ShadowSampleBuilder(name: string, para: object) {
 
 const COLUMN_SPACE: number = 12;
 const TAG: string = "ShadowSample";
+
 @Component
 struct ShadowSample {
   pageInfos: NavPathStack = new NavPathStack();
@@ -33,7 +39,7 @@ struct ShadowSample {
 
             // 设置设备影子监听器
             let shadowListener: ShadowListener = {
-              onShadow: (requestId: string, shadowDataList: ShadowData[]): void => {
+              onShadow: (requestId: string, shadowDataList?: ShadowData[]): void => {
                 LogUtil.info(TAG, `requestId is ${requestId}`);
               }
             }
@@ -43,11 +49,13 @@ struct ShadowSample {
               object_device_id: this.device.deviceId,
               service_id: 'smokeDetector'
             }
-            this.device.client.getShadow(shadowRequest).then((data: IoTMqttResponse) => {
-              LogUtil.info(TAG, "getShadow success")
-            }).catch((err: IoTMqttResponse | string) => {
-              LogUtil.error(TAG, `getShadow failed ${JSON.stringify(err)}`)
-            })
+            this.device.client.getShadow(shadowRequest)
+              .then((data: IoTMqttResponse) => {
+                LogUtil.info(TAG, "getShadow success")
+              })
+              .catch((err: IoTMqttResponse | string) => {
+                LogUtil.error(TAG, `getShadow failed ${JSON.stringify(err)}`)
+              })
           })
       }
       .height('100%')
@@ -58,5 +66,4 @@ struct ShadowSample {
       this.device = this.pageInfos.getParamByName("shadowSample")[0] as IoTDevice;
     })
   }
-
 }

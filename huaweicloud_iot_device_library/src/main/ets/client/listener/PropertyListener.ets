@@ -19,5 +19,5 @@ export interface PropertyListener {
    * @param requestId 请求id
    * @param serviceId 服务id，可选
    */
-  onPropertiesGet: (requestId: string, serviceId: string) => void;
+  onPropertiesGet: (requestId: string, serviceId?: string) => void;
 }

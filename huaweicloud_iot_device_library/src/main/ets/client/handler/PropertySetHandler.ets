@@ -1,12 +1,12 @@
 import { PropsSet } from "../../requests/PropsSet";
 import { RawMessage } from "../../requests/RawMessage";
 import { IoTUtil } from "../../utils/IoTUtil";
+import { LogUtil } from "../../utils/LogUtil";
 import { DeviceClient } from "../DeviceClient";
 import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
 
 export class PropertySetHandler implements MessageReceivedHandler {
-
   private deviceClient: DeviceClient;
 
   constructor(deviceClient: DeviceClient) {
@@ -26,10 +26,9 @@ export class PropertySetHandler implements MessageReceivedHandler {
 
       this.deviceClient.device.onPropertiesSet(requestId, propsSet);
     } catch (e) {
-      console.error("invalid propsSet");
+      LogUtil.error("invalid propsSet");
       return;
     }
 
   }
-
 }

@@ -9,5 +9,5 @@ export interface ShadowListener {
    * @param requestId       请求id
    * @param shadowDataList  服务影子数据
    */
-  onShadow: (requestId: string, shadowDataList: ShadowData[]) => void;
+  onShadow: (requestId: string, shadowDataList?: ShadowData[]) => void;
 }
