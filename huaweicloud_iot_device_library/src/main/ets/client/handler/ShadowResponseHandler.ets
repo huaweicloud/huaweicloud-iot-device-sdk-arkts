@@ -4,7 +4,6 @@ import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
 
 export class ShadowResponseHandler implements MessageReceivedHandler {
-
   private deviceClient: DeviceClient;
 
   constructor(deviceClient: DeviceClient) {
@@ -14,7 +13,5 @@ export class ShadowResponseHandler implements MessageReceivedHandler {
   messageHandler(message: RawMessage): void {
 
 
-
   }
-
 }

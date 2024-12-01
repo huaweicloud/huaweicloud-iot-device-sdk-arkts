@@ -1,5 +1,4 @@
 export class IotResult {
-
   static readonly SUCCESS = new IotResult(0, "Success");
 
   static readonly FAIL = new IotResult(1, "Fail");

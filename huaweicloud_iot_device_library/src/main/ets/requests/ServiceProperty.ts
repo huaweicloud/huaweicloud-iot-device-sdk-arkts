@@ -6,7 +6,6 @@ export interface ServiceProperty {
    * 服务id，和设备模型里一致
    */
   service_id: string
-
   /**
    * 属性值，具体字段由设备模型定义
    */

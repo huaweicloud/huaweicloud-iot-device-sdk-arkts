@@ -1,12 +1,12 @@
 import { PropsGet } from "../../requests/PropsGet";
 import { RawMessage } from "../../requests/RawMessage";
 import { IoTUtil } from "../../utils/IoTUtil";
+import { LogUtil } from "../../utils/LogUtil";
 import { DeviceClient } from "../DeviceClient";
 import { MessageReceivedHandler } from "./MessageReceivedHandler";
 
 
 export class PropertyGetHandler implements MessageReceivedHandler {
-
   private deviceClient: DeviceClient;
 
   constructor(deviceClient: DeviceClient) {
@@ -26,10 +26,9 @@ export class PropertyGetHandler implements MessageReceivedHandler {
 
       this.deviceClient.device.onPropertiesGet(requestId, propsGet);
     } catch (e) {
-      console.error("invalid propsGet");
+      LogUtil.error("invalid propsGet");
       return;
     }
 
   }
-
 }

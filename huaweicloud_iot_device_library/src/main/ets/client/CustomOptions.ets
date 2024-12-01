@@ -92,6 +92,4 @@ export class CustomOptions {
   public get offlineBufferSize(): number {
     return this._offlineBufferSize;
   }
-
-
 }

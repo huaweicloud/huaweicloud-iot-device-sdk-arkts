@@ -47,6 +47,14 @@
       "data": {
         "description": "Profile Sample"
       }
+    },
+    {
+      "name": "reConnectSample",
+      "pageSourceFile": "src/main/ets/pages/ReConnectSample.ets",
+      "buildFunction": "ReConnectSampleBuilder",
+      "data": {
+        "description": "ReConnect Sample"
+      }
     }
   ]
 }

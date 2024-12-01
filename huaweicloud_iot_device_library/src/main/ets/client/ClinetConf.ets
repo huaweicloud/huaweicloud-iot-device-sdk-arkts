@@ -1,9 +1,9 @@
 export type IoTMqttQos = 0 | 1;
 
 /**
-* 客户端配置
-*/
-export interface  ClientConf  {
+ * 客户端配置
+ */
+export interface ClientConf {
   /**
    * 设备id，在平台注册设备获得，生成规则：productId_nodeId
    */
@@ -34,11 +34,10 @@ export interface  ClientConf  {
    */
   qos?: IoTMqttQos;
 
-
   /**
    * 0代表直连方式，3代表网桥方式(跟平台保持一致)。默认是0
    */
-  mode? : number;
+  mode?: number;
 
   /**
    * iot平台的ca证书路径，用于设备侧校验平台（resfile文件夹下）

@@ -127,6 +127,18 @@
     {
       "name": "shadow",
       "value": "Shadow"
+    },
+    {
+      "name": "try_reconnect_title",
+      "value": "Try ReConnect"
+    },
+    {
+      "name": "set_reconnect_option",
+      "value": "Set Reconnect Option"
+    },
+    {
+      "name": "reconnect",
+      "value": "Reconnect"
     }
   ]
 }
