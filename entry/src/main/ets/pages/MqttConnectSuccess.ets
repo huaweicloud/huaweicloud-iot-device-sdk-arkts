@@ -1,4 +1,4 @@
-import { IoTDevice } from 'huaweicloud_iot_device_library';
+import { IoTDevice } from '@huaweicloud/iot-device-sdk';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder
@@ -60,6 +60,7 @@ struct MqttConnectSuccess {
         Button($r('app.string.disconnect'))
           .width(300)
           .margin({ top: 20 })
+          .role(ButtonRole.ERROR)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               LogUtil.info(TAG, "mqtt not connect")

@@ -5,8 +5,12 @@ export interface ConnectListener {
   /**
    * 连接丢失通知
    *
-   * @param cause 连接丢失原因
    */
   connectionLost: () => void;
+
+  /**
+   * 连接成功通知
+   */
+  connectComplete: () => void;
 
 }

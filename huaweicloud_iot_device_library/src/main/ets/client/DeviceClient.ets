@@ -50,6 +50,8 @@ export class DeviceClient {
 
   private static readonly EVENT_DOWN_TOPIC = "/sys/events/down";
 
+  private static readonly CONNECT_BAD_USERNAME_OR_PASSWORD = 4; // mqtt连接用户名密码不匹配返回4
+
   private _propertyListener: PropertyListener | null = null;
 
   /**
@@ -216,29 +218,42 @@ export class DeviceClient {
 
   async connect(): Promise<boolean>{
     return new Promise(async (resolve, reject) => {
+
+      if (this.mqttClient) {
+        if (await this.mqttClient.isConnected()) {
+          // 如果已连接 无需再次连接
+          LogUtil.log(`is connected no need to connect`);
+          resolve(true);
+        }
+        // 未连接 先销毁上次连接
+        await this.destroy();
+      }
+
       const timestamp = IoTUtil.getTimestamp();
       this.createMqtt(this.clientConf.serverUri, this.generateClientId(timestamp))
       if (this.mqttClient === null) {
         reject("mqttClient is null");
         return;
       }
+
+      const options: MqttConnectOptions = {
+        keepAliveInterval: 60,
+        userName: this.device.deviceId,
+        password: this.generatePassword(timestamp),
+        connectTimeout: 30,
+        MQTTVersion: 0,
+        sslOptions: {
+          enableServerCertAuth: true,
+          trustStore: `${getContext().resourceDir}/${this.clientConf.caFilePath ?? 'GlobalSign-rootca.pem'}`
+        }
+      }
+      if (this.clientConf.serverUri.startsWith("tcp://")) {
+        options.sslOptions = {
+          enableServerCertAuth: false,
+        }
+      }
+
       try {
-        const options: MqttConnectOptions = {
-          keepAliveInterval: 60,
-          userName: this.device.deviceId,
-          password: this.generatePassword(timestamp),
-          connectTimeout: 30,
-          MQTTVersion: 0,
-          sslOptions: {
-            enableServerCertAuth: true,
-            trustStore: `${getContext().resourceDir}/${this.clientConf.caFilePath ?? 'GlobalSign-rootca.pem'}`
-          }
-        }
-        if (this.clientConf.serverUri.startsWith("tcp://")) {
-          options.sslOptions = {
-            enableServerCertAuth: false,
-          }
-        }
         let result = await this.mqttClient.connect(options);
         LogUtil.log(`connect result is ${JSON.stringify(result)}`);
         if (await this.mqttClient.isConnected()) {
@@ -246,6 +261,8 @@ export class DeviceClient {
           this.messageArrived();
           // 监听断链
           this.connectLost();
+          // 监听连接成功
+          this.connectComplete();
           // 上报设备信息
           this.reportDeviceInfo(null, null);
           resolve(true);
@@ -253,8 +270,14 @@ export class DeviceClient {
         }
       } catch (err) {
         LogUtil.log(`mqtt connect failed ${JSON.stringify(err)}`);
-        reject(err);
-        return;
+
+        if (err.code === DeviceClient.CONNECT_BAD_USERNAME_OR_PASSWORD) {
+          // 用户名密码有误，不进行重连
+          reject(err);
+          return;
+        }
+        resolve(await this.reconnect());
+
       }
     })
   }
@@ -529,10 +552,18 @@ export class DeviceClient {
     return this.mqttClient.subscribe(subscribeOption);
   }
 
+  private connectComplete() {
+    if (this.connectionListener !== null) {
+      // 进行连接成功的自定义处理
+      this.connectionListener.connectComplete();
+    }
+  }
+
   private connectLost() {
     this.mqttClient?.connectLost(async (err: Error, data: IoTMqttResponse) => {
       LogUtil.log("connection lost");
       if (this.connectionListener !== null) {
+        // 先执行监听器中的自定义处理
         this.connectionListener.connectionLost();
       }
       // 自定义断线重连
@@ -550,15 +581,30 @@ export class DeviceClient {
     })
   }
 
-  private async reconnect(retryTimes: number = 0) {
+  private async reconnect(retryTimes: number = 0): Promise<boolean> {
+    const customBackoffHandler = this.device.client.customOptions.customBackoffHandler;
+    if (customBackoffHandler) {
+      customBackoffHandler.backoffHandler();
+      return false;
+    }
+
+    if (!this.device.client.customOptions.reConnect) {
+      return false;
+    }
+
     const waitTImeUntilNextRetry = this.getWaitTImeUntilNextRetry(retryTimes);
     await this.sleep(waitTImeUntilNextRetry);
-    if (await this.mqttClient?.reconnect()) {
-      LogUtil.log("reconnect success");
-      return;
+    try {
+      if (await this.connect()) {
+        LogUtil.log("reconnect success");
+        return true;
+      }
+    } catch (e) {
+      LogUtil.error(`reconnect failed ${JSON.stringify(e)}`);
     }
+
     retryTimes++;
-    await this.reconnect(retryTimes);
+    return await this.reconnect(retryTimes);
   }
 
   private getWaitTImeUntilNextRetry(retryTimes: number) {
