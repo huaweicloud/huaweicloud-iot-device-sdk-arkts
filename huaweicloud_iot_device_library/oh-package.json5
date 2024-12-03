@@ -1,5 +1,5 @@
 {
-  "name": "huaweicloud_iot_device_library",
+  "name": "@huaweicloud/iot-device-sdk",
   "version": "0.0.1",
   "description": "Please describe the basic information.",
   "main": "index.ets",

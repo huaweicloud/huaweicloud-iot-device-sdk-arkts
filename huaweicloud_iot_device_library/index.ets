@@ -11,6 +11,7 @@ export { PropertyListener } from './src/main/ets/client/listener/PropertyListene
 export { RawMessageListener } from './src/main/ets/client/listener/RawMessageListener';
 export { ShadowListener } from './src/main/ets/client/listener/ShadowListener';
 export { RawDeviceMessageListener } from './src/main/ets/client/listener/RawDeviceMessageListener';
+export { ConnectListener } from './src/main/ets/client/listener/ConnectionListener';
 
 export { CommandRsp } from './src/main/ets/requests/CommandRsp';
 export { ShadowRequest } from './src/main/ets/requests/ShadowRequest';

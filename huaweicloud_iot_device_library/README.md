@@ -14,7 +14,30 @@ huaweicloud-iot-device-sdk-arkts提供设备接入华为云IoT物联网平台的
 
 # 2.SDK简介
 
-## 2.1 功能支持
+## 2.1 准备工作
+- 已安装[DevEco Studio](https://developer.huawei.com/consumer/cn/download/) 5.0.0及以上版本。
+- 已安装[配套](https://developer.huawei.com/consumer/cn/doc/harmonyos-faqs-V5/faqs-development-environment-1-V5)的Node.js版本。
+
+## 2.2 下载安装
+```shell
+ohpm install @huaweicloud/iot-device-sdk
+```
+
+## 2.3 权限配置
+使用SDK需要网络连接的权限，需要在module.json5的requestPermissions中增加"ohos.permission.INTERNET"的权限，如下所示
+```json
+{
+  "module": {
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET"
+      }
+    ]
+  }
+}
+```
+
+## 2.4 功能支持
 SDK面向运算、存储能力较强的嵌入式终端设备，开发者通过调用SDK接口，便可实现设备与物联网平台的上下行通讯。SDK当前支持的功能有：
 
 | 功能                         | 描述说明                                                                                                                                              |
@@ -29,13 +52,10 @@ SDK面向运算、存储能力较强的嵌入式终端设备，开发者通过�
 | [面向物模型编程](#3.13)      | 面向物模型编程指的是，基于SDK提供的物模型抽象能力，设备代码只需要按照物模型定义设备服务，SDK就能自动的和平台通讯，完成属性的同步和命令的调用。<br/>相比直接调用客户端接口和平台进行通讯，面向物模型编程简化了设备侧代码的复杂度，让设备代码只需要关注业务，而不用关注和平台的通讯过程。 |
 
 
-
 # 3.SDK功能
 
-依赖的版本：
-* DevEco Studio ：5.0.0 +
-
-
+- 为方便用户体验，以下介绍SDK功能及Demo演示时，均使用烟感的产品模型，烟感会上报烟雾值，温度，湿度，烟雾报警，还支持响铃报警命令。
+- 您可以在[华为云设备接入](https://console.huaweicloud.com/iotdm)创建产品，将[烟感模型](https://iot-developer.obs.cn-north-4.myhuaweicloud.com:443/smokeDetector.zip)导入，并创建设备，体验以下功能。
 
 <h2 id="3.0">设备初始化</h2>
 
@@ -53,7 +73,7 @@ this.device.init().then((data: boolean) => {
   // 连接失败处理
 })
 // 或使用同步方式初始化
-await this.device.init();
+// await this.device.init();
 ```
 
 <h2  id  =  "3.1">3.1 自定义选项</h2>
@@ -73,7 +93,7 @@ device.customOptions: CustomOptions = customOptions;
 
 
 <h2  id  =  "3.2">3.2  断线重连</h2>
-在SDK中内置了一个断线重连，若需要自定义断线重连，可以重写SDK：src/main/ets/client/handler/CustomBackoffHandler.ets中backoffHandler方法。自定义断线重连可见demo：src/main/ets/pages/ReConnectSample.ets。
+在SDK中内置了一个断线重连，若需要自定义断线重连，可以重写SDK：src/main/ets/client/handler/CustomBackoffHandler.ets中backoffHandler方法。自定义断线重连可见demo：src/main/ets/pages/ReConnectSample.ets（Demo展示了连接成功后设置断线重连的方式，您也可以在连接之前设置）。
 
 默认断线重连为每隔一段时间进行一次重连。主要参数如下，可以通过修改最大、最小重连间隔时间实现重连控制。
 
@@ -86,7 +106,46 @@ device.customOptions: CustomOptions = customOptions;
 
 ```
 
-值得注意的是，建议在断线重连后，在建链成功后进行设备订阅，以免重连后订阅丢失。
+值得注意的是，建议在断线重连后，在建链成功回调中进行设备订阅，以免重连后订阅丢失。
+可以参考src/main/ets/pages/MessageSample.ets中设置connectionListener的方法。
+
+```arkts
+  ......
+  // 设置连接监听器，断线重连处理以及重新连接成功处理
+  this.device.client.connectionListener = this.getConnectionListener();
+  ......
+
+  private getConnectionListener() {
+    let connectionListener: ConnectListener = {
+      connectionLost: (): void => {
+        // 断线后有默认处理，也可以增加自己的处理逻辑
+        LogUtil.error(TAG, `connectionLost`);
+      },
+      connectComplete: (): void => {
+        // 连接成功后，自动重新订阅Topic
+        if (!this.ocTopicListener && !this.helloWorldTopicListener) {
+          return;
+        }
+        if (this.helloWorldTopicListener) {
+          this.subscribe(HELLO_WORLD_TOPIC, this.helloWorldTopicListener)
+        }
+        if (this.ocTopicListener) {
+          this.subscribe(`$oc/devices/${this.device?.deviceId}/user/test`, this.ocTopicListener)
+        }
+
+      }
+    }
+    return connectionListener;
+  }
+
+  private subscribe(topic: string, rawMessageListener: RawMessageListener) {
+    this.device?.client.subscribeTopic(topic, rawMessageListener).then((data: IoTMqttResponse) => {
+      LogUtil.info(TAG, `resubscribe topic success ${JSON.stringify(data)}`);
+    }).catch((err: IoTMqttResponse | string) => {
+      LogUtil.error(TAG, `resubscribe topic(${topic}) failed ${JSON.stringify(err)}`);
+    })
+  }
+```
 
 
 <h2  id  =  "3.3">3.3  消息上报、下发</h2>
@@ -206,49 +265,47 @@ device.customOptions: CustomOptions = customOptions;
     })
   ```
 
-  - 平台设置设备属性和查询设备属性
+- 平台设置设备属性和查询设备属性
 
-    ```arkts
-    // 接收平台下发的属性读写
-    let propertyListener: PropertyListener = {
-      onPropertiesSet: (requestId: string, services: ServiceProperty[]): void => {
-        // 遍历services
-        services.forEach(serviceProperty => {
-          LogUtil.info("onPropertiesSet, serviceId is ", serviceProperty.service_id);
-          // 遍历属性
-          Object.keys(serviceProperty.properties).forEach(name => {
-            LogUtil.log(TAG, `property name is ${name}`);
-            LogUtil.log(TAG, `set property value is ${serviceProperty.properties["name"]}`);
-          })
+  ```arkts
+  // 接收平台下发的属性读写
+  let propertyListener: PropertyListener = {
+    onPropertiesSet: (requestId: string, services: ServiceProperty[]): void => {
+      // 遍历services
+      services.forEach(serviceProperty => {
+        LogUtil.info("onPropertiesSet, serviceId is ", serviceProperty.service_id);
+        // 遍历属性
+        Object.keys(serviceProperty.properties).forEach(name => {
+          LogUtil.log(TAG, `property name is ${name}`);
+          LogUtil.log(TAG, `set property value is ${serviceProperty.properties["name"]}`);
         })
+      })
 
-        // 修改本地的属性
-        this.device.client.respondPropsSet(requestId, IotResult.SUCCESS);
-      },
-  
-        /**
-         * 处理读属性。多数场景下，用户可以直接从平台读设备影子，此接口不用实现。
-         * 但如果需要支持从设备实时读属性，则需要实现此接口。
-         */
-      onPropertiesGet: (requestId: string, serviceId: string): void => {
-        LogUtil.info(TAG, `onPropertiesGet, the serviceId is ${serviceId}` );
-         const serviceProperties: ServiceProperty[] = [
-          {
-            "service_id": "smokeDetector",
-            "properties": {
-              "alarm": 1,
-              "temperature": Math.random() * 100,
-              "humidity": Math.random() * 100,
-              "smokeConcentration": Math.random() * 100,
-            }
+      // 修改本地的属性
+      this.device.client.respondPropsSet(requestId, IotResult.SUCCESS);
+    },
+
+    /**
+     * 处理读属性。多数场景下，用户可以直接从平台读设备影子，此接口不用实现。
+     * 但如果需要支持从设备实时读属性，则需要实现此接口。
+     */
+    onPropertiesGet: (requestId: string, serviceId: string): void => {
+      LogUtil.info(TAG, `onPropertiesGet, the serviceId is ${serviceId}` );
+       const serviceProperties: ServiceProperty[] = [
+        {
+          "service_id": "smokeDetector",
+          "properties": {
+            "alarm": 1,
+            "temperature": Math.random() * 100,
+            "humidity": Math.random() * 100,
+            "smokeConcentration": Math.random() * 100,
           }
-        ]
-        this.device.client.respondPropsGet(requestId, serviceProperties);
-      }
+        }
+      ]
+      this.device.client.respondPropsGet(requestId, serviceProperties);
     }
-    ```
-
-
+  }
+  ```
 
 <h2  id  =  "3.5">3.5  命令下发</h2>
 示例代码可见SDK：CommandSample.ets。
@@ -308,7 +365,7 @@ device.customOptions: CustomOptions = customOptions;
    }
 
 ```
-定义服务属性，私有变量已下划线开头，注解中name和产品模型中属性名保持一致。writeable用来标识属性是否可写
+定义服务属性，私有变量以下划线开头，注解中name和产品模型中属性名保持一致。writeable用来标识属性是否可写
 ```arkts
     @Reflect.metadata("Property", { name: "alarm", writeable: true })
     private _smokeAlarm: number = 1;
@@ -394,7 +451,7 @@ method对应接收命令的处理方法，命令的入参和返回值类型固�
 
 启动服务属性自动周期上报
 ```arkts
-     smokeDetector.enableAutoReport(10000);
+   smokeDetector.enableAutoReport(10000);
 ```
 
 ## 4. License

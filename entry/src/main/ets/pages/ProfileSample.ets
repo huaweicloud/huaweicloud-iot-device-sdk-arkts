@@ -1,4 +1,4 @@
-import { IoTDevice, CommandRsp, AbstractService, IotResult} from 'huaweicloud_iot_device_library';
+import { IoTDevice, CommandRsp, AbstractService, IotResult} from '@huaweicloud/iot-device-sdk';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder
@@ -7,32 +7,84 @@ export function ProfileSampleBuilder(name: string, para: object) {
 }
 
 const COLUMN_SPACE: number = 12;
-const TAG: string = "ProfileSample";
+const TAG: string = "ProfileSample#";
 @Component
 struct ProfileSample {
   pageInfos: NavPathStack = new NavPathStack();
   private device: IoTDevice | null = null;
+  private scroller: Scroller = new Scroller(); // 创建一个滚动控制器
+  @State logArr: string[] = [];
+  @State isEnableAutoReport: boolean = false;
 
   build() {
     NavDestination() {
       Column({ space: COLUMN_SPACE }) {
         Text($r('app.string.try_profile_title'))
-          .margin({ top: 20 })
+          .margin({ top: 10 })
           .width(300)
 
         Button($r('app.string.set_profile'))
+          .enabled(!this.isEnableAutoReport)
           .width(300)
-          .margin({ top: 20 })
+          .margin({ top: 10 })
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               LogUtil.info(TAG, "mqtt not connect")
               return;
             }
+            this.isEnableAutoReport = true;
             const smokeDetector = new SmokeDetector();
             this.device.addService("smokeDetector", smokeDetector);
             // 启动自动上报
             smokeDetector.enableAutoReport(10000);
+            this.logArr.unshift(`${new Date()}: add service success and enable auto report`)
           })
+
+        Button($r('app.string.disable_auto_report'))
+          .enabled(this.isEnableAutoReport)
+          .width(300)
+          .margin({ top: 10 })
+          .onClick(async () => {
+            if (!this.device?.client || !await this.device?.client.isConnected()) {
+              LogUtil.info(TAG, "mqtt not connect")
+              return;
+            }
+            // 取消自动上报
+            this.device.services.get('smokeDetector')?.disableAutoReport();
+            this.isEnableAutoReport = false;
+            this.logArr.unshift(`${new Date()}: disable auto report success`)
+          })
+
+        Scroll(this.scroller) {                  // 绑定滚动控制器
+          Column() {
+            ForEach(this.logArr, (log: string) => {      // ForEach语法循环创建子组件
+              Text(log)
+                .fontSize(12)
+                .width('98%')
+                .borderRadius(10)
+                .backgroundColor(Color.White)
+                .margin({top: 10})
+            })
+          }
+          .width("100%")
+        }
+        .scrollable(ScrollDirection.Vertical)    // 设置竖直方向滚动
+        .scrollBarColor(Color.Gray)             // 设置滚动条颜色
+        .scrollBarWidth(10)                      // 设置滚动条宽度
+        .scrollBar(BarState.On)                  // 设置滚动条永久显示
+        .width('100%')
+        .height(220)
+        .padding({top: 10, bottom: 10})
+        .border({ width: 0.5 })
+
+        if (this.logArr.length > 0) {
+          Button($r('app.string.clear_log'))
+            .width(300)
+            .margin({ top: 10 })
+            .onClick(() => {
+              this.logArr = []
+            })
+        }
       }
       .height('100%')
       .width('100%')
