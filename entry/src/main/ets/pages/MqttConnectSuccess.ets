@@ -14,6 +14,7 @@
 
 import { IoTDevice } from '@huaweicloud/iot-device-sdk';
 import { LogUtil } from './utils/LogUtil';
+import { promptAction } from '@kit.ArkUI';
 
 @Builder
 export function MqttConnectSuccessBuilder(name: string, para: object) {
@@ -83,6 +84,10 @@ struct MqttConnectSuccess {
             }
             await this.device?.client.disconnect();
             await this.device?.client.destroy();
+            promptAction.showToast({
+              message: 'Disconnect Success',
+              duration: 2000,
+            })
             this.pageInfos.clear();
           })
       }

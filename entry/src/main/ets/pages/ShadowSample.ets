@@ -19,6 +19,7 @@ import {
   ShadowRequest,
   ShadowData
 } from '@huaweicloud/iot-device-sdk';
+import { ScrollerLogComponent } from './components/ScrollerLog';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder
@@ -34,7 +35,6 @@ struct ShadowSample {
   pageInfos: NavPathStack = new NavPathStack();
   private device: IoTDevice | null = null;
   @State logArr: string[] = [];
-  private scroller: Scroller = new Scroller(); // 创建一个滚动控制器
 
   build() {
     NavDestination() {
@@ -76,36 +76,7 @@ struct ShadowSample {
               })
           })
 
-        Scroll(this.scroller) {                  // 绑定滚动控制器
-          Column() {
-            ForEach(this.logArr, (log: string) => {      // ForEach语法循环创建子组件
-              Text(log)
-                .fontSize(12)
-                .width('98%')
-                .borderRadius(10)
-                .backgroundColor(Color.White)
-                .margin({top: 10})
-            })
-          }
-          .width("100%")
-        }
-        .scrollable(ScrollDirection.Vertical)    // 设置竖直方向滚动
-        .scrollBarColor(Color.Gray)             // 设置滚动条颜色
-        .scrollBarWidth(10)                      // 设置滚动条宽度
-        .scrollBar(BarState.On)                  // 设置滚动条永久显示
-        .width('100%')
-        .height(220)
-        .padding({top: 10, bottom: 10})
-        .border({ width: 0.5 })
-
-        if (this.logArr.length > 0) {
-          Button($r('app.string.clear_log'))
-            .width(300)
-            .margin({ top: 10 })
-            .onClick(() => {
-              this.logArr = []
-            })
-        }
+        ScrollerLogComponent({logArr: this.logArr})
       }
       .height('100%')
       .width('100%')
