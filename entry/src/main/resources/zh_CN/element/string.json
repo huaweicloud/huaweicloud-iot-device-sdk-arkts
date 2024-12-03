@@ -106,7 +106,7 @@
     },
     {
       "name": "profile",
-      "value": "物模型示例"
+      "value": "物模型"
     },
     {
       "name": "try_profile_title",
@@ -139,6 +139,18 @@
     {
       "name": "reconnect",
       "value": "断线重连"
+    },
+    {
+      "name": "set_property_listener",
+      "value": "设置属性监听器"
+    },
+    {
+      "name": "clear_log",
+      "value": "清除日志"
+    },
+    {
+      "name": "disable_auto_report",
+      "value": "取消自动上报"
     }
   ]
 }

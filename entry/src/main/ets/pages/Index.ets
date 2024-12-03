@@ -1,7 +1,8 @@
-import { IoTDevice } from 'huaweicloud_iot_device_library';
+import { IoTDevice } from '@huaweicloud/iot-device-sdk';
 import { LogUtil } from './utils/LogUtil';
+import { promptAction } from '@kit.ArkUI';
 
-const TAG: string = "Login"
+const TAG: string = "Login#"
 
 @Entry
 @Component
@@ -11,6 +12,7 @@ struct Index {
   @State serverUri: string = "";
   @State deviceId: string = "";
   @State deviceSecret: string = "";
+  @State isConnecting: boolean = false;
 
   build() {
     Navigation(this.pageInfos) {
@@ -31,28 +33,47 @@ struct Index {
           .onChange((value: string) => {
             this.deviceSecret = value;
           })
-        Button($r('app.string.iotda_connect'))
-          .width(300)
-          .margin({ top: 20 })
-          .onClick(async () => {
-            LogUtil.debug(TAG, "click mqtt connect button");
-            if (this.device?.client && await this.device.client.isConnected()) {
-              LogUtil.info(TAG, "mqtt is connected");
-              this.pageInfos.pushPathByName("mqttConnectSuccess", this.device);
-              return;
-            }
-            // 证书文件放在resource/resfile下，连接华为云时请使用对应的证书。
-            this.device = new IoTDevice(this.serverUri, this.deviceId, this.deviceSecret, 'GlobalSign-rootca.pem');
-            
-            this.device.init().then(async (data: boolean) => {
-              LogUtil.info(TAG, `mqtt connect result is ${data}`);
-              if (await this.device?.client.isConnected()) {
+        if (!this.isConnecting) {
+          Button($r('app.string.iotda_connect'))
+            .width(300)
+            .margin({ top: 20 })
+            .onClick(async () => {
+              LogUtil.debug(TAG, "click mqtt connect button");
+              this.isConnecting = true;
+              if (this.device?.client && await this.device.client.isConnected()) {
+                LogUtil.info(TAG, "mqtt is connected");
+                this.isConnecting = false;
                 this.pageInfos.pushPathByName("mqttConnectSuccess", this.device);
+                return;
               }
-            }).catch((err: string) => {
-              LogUtil.error(TAG, `mqtt connect failed ${JSON.stringify(err)}`);
+              // 证书文件放在resource/resfile下，连接华为云时请使用对应的证书。
+              this.device = new IoTDevice(this.serverUri, this.deviceId, this.deviceSecret, 'GlobalSign-rootca.pem');
+              this.device.init().then(async (data: boolean) => {
+                LogUtil.info(TAG, `mqtt connect result is ${data}`);
+                this.isConnecting = false;
+                if (await this.device?.client.isConnected()) {
+                  promptAction.showToast({
+                    message: 'Connect Success',
+                    duration: 2000
+                  })
+                  this.pageInfos.pushPathByName("mqttConnectSuccess", this.device);
+                }
+              }).catch((err: string) => {
+                this.isConnecting = false;
+                LogUtil.error(TAG, `mqtt connect failed ${JSON.stringify(err)}`);
+                promptAction.showDialog({
+                  title: 'Connect Failed',
+                  message: `Reason: ${JSON.stringify(err)}`,
+                })
+              })
             })
-          })
+        } else {
+          LoadingProgress()
+            .color(Color.Blue)
+            .margin({top: 20})
+            .width(40)
+        }
+
       }
     }
     .title($r('app.string.iotda_title'))

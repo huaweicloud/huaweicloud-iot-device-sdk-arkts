@@ -106,7 +106,7 @@
     },
     {
       "name": "profile",
-      "value": "Profile Sample"
+      "value": "Profile"
     },
     {
       "name": "try_profile_title",
@@ -139,6 +139,18 @@
     {
       "name": "reconnect",
       "value": "Reconnect"
+    },
+    {
+      "name": "set_property_listener",
+      "value": "Set Property Listener"
+    },
+    {
+      "name": "clear_log",
+      "value": "Clear Log"
+    },
+    {
+      "name": "disable_auto_report",
+      "value": "Disable Auto Report"
     }
   ]
 }

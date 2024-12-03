@@ -4,7 +4,7 @@ import {
   IotResult,
   PropertyListener,
   ServiceProperty
-} from 'huaweicloud_iot_device_library';
+} from '@huaweicloud/iot-device-sdk';
 import { LogUtil } from './utils/LogUtil';
 
 @Builder
@@ -13,25 +13,28 @@ export function PropertySampleBuilder(name: string, para: object) {
 }
 
 const COLUMN_SPACE: number = 12;
-const TAG: string = "PropertySample";
+const TAG: string = "PropertySample#";
 
 @Component
 struct PropertySample {
   pageInfos: NavPathStack = new NavPathStack();
   private device: IoTDevice | null = null;
   @State properties: string = "";
+  @State isPropertyListenerSet: boolean = false;
+  @State logArr: string[] = [];
+  private scroller: Scroller = new Scroller(); // 创建一个滚动控制器
 
   build() {
     NavDestination() {
       Column({ space: COLUMN_SPACE }) {
         Text($r('app.string.try_property_title'))
-          .margin({ top: 20 })
+          .margin({ top: 10 })
           .width(300)
         TextArea({
           placeholder: $r('app.string.input_property_placeholder'),
           text: JSON.stringify(this.getDefaultProperties())
         })
-          .margin({ top: 20 })
+          .margin({ top: 10 })
           .width(300)
           .height(200)
           .onChange((value: string) => {
@@ -40,23 +43,69 @@ struct PropertySample {
 
         Button($r('app.string.report_property'))
           .width(300)
-          .margin({ top: 20 })
+          .margin({ top: 10 })
+          .onClick(async () => {
+            if (!this.device?.client || !await this.device?.client.isConnected()) {
+              LogUtil.info(TAG, "mqtt not connect")
+              return;
+            }
+            const properties: ServiceProperty[] = JSON.parse(this.properties);
+            this.device.client.reportProperties(properties)
+              .then((data: IoTMqttResponse) => {
+                LogUtil.info(TAG, `report properties success ${JSON.stringify(data)}`);
+                this.logArr.unshift(`${new Date()}: report properties success`)
+              })
+              .catch((error: IoTMqttResponse | string) => {
+                LogUtil.error(TAG, `report properties failed ${JSON.stringify(error)}`);
+                this.logArr.unshift(`${new Date()}: report properties failed`)
+              })
+          })
+        Button($r('app.string.set_property_listener'))
+          .width(300)
+          .margin({ top: 10 })
+          .enabled(!this.isPropertyListenerSet)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               LogUtil.info(TAG, "mqtt not connect")
               return;
             }
             this.setPropertyListener();
-            const properties: ServiceProperty[] = JSON.parse(this.properties);
-            this.device.client.reportProperties(properties)
-              .then((data: IoTMqttResponse) => {
-                LogUtil.info(TAG, `report properties success ${JSON.stringify(data)}`);
-              })
-              .catch((error: IoTMqttResponse | string) => {
-                LogUtil.error(TAG, `report properties failed ${JSON.stringify(error)}`);
-              })
+            this.logArr.unshift(`${new Date()}: set property listener`)
           })
+
+        Scroll(this.scroller) { // 绑定滚动控制器
+          Column() {
+            ForEach(this.logArr, (log: string) => { // ForEach语法循环创建子组件
+              Text(log)
+                .fontSize(12)
+                .width('98%')
+                .borderRadius(10)
+                .backgroundColor(Color.White)
+                .margin({ top: 10 })
+            })
+          }
+          .width("100%")
+        }
+        .scrollable(ScrollDirection.Vertical) // 设置竖直方向滚动
+        .scrollBarColor(Color.Gray) // 设置滚动条颜色
+        .scrollBarWidth(10) // 设置滚动条宽度
+        .scrollBar(BarState.On) // 设置滚动条永久显示
+        .width('100%')
+        .height(220)
+        .padding({ top: 10, bottom: 10 })
+        .border({ width: 0.5 })
+
+        if (this.logArr.length > 0) {
+          Button($r('app.string.clear_log'))
+            .width(300)
+            .margin({ top: 10 })
+            .onClick(() => {
+              this.logArr = []
+            })
+        }
+
       }
+
     }
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
@@ -85,6 +134,7 @@ struct PropertySample {
     }
     let propertyListener: PropertyListener = {
       onPropertiesSet: (requestId: string, services: ServiceProperty[]): void => {
+        this.logArr.unshift(`${new Date()}: onPropertiesSet requestId is ${requestId}, services is ${JSON.stringify(services)}`)
         // 遍历services
         services.forEach(serviceProperty => {
           LogUtil.info("onPropertiesSet, serviceId is ", serviceProperty.service_id);
@@ -99,6 +149,7 @@ struct PropertySample {
         this.device?.client.respondPropsSet(requestId, IotResult.SUCCESS);
       },
       onPropertiesGet: (requestId: string, serviceId?: string): void => {
+        this.logArr.unshift(`${new Date()}: onPropertiesGet requestId is ${requestId}, serviceId is ${serviceId} and respondPropsGet`)
         LogUtil.info(TAG, `onPropertiesGet, the serviceId is ${serviceId}`);
         const serviceProperties = this.getDefaultProperties();
         this.device?.client.respondPropsGet(requestId, serviceProperties);
@@ -106,6 +157,6 @@ struct PropertySample {
     }
     // 设置属性监听器
     this.device.client.propertyListener = propertyListener;
-
+    this.isPropertyListenerSet = true;
   }
 }

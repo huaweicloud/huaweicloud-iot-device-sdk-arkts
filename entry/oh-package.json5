@@ -2,11 +2,11 @@
   "name": "entry",
   "version": "0.0.1",
   "description": "Please describe the basic information.",
-  "main": "",
+  "main": "entry",
   "author": "",
   "license": "",
   "dependencies": {
-    "huaweicloud_iot_device_library": "file:../huaweicloud_iot_device_library"
+    "@huaweicloud/iot-device-sdk": "file:../huaweicloud_iot_device_library"
   }
 }
 
