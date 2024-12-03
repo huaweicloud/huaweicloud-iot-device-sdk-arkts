@@ -16,6 +16,7 @@ huaweicloud-iot-device-sdk-arkts提供设备接入华为云IoT物联网平台的
 
 ## 2.1 准备工作
 - 已安装[DevEco Studio](https://developer.huawei.com/consumer/cn/download/) 5.0.0及以上版本。
+  DevEco Studio更多资料请参考[工具简介](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/ide-tools-overview-V5)。
 - 已安装[配套](https://developer.huawei.com/consumer/cn/doc/harmonyos-faqs-V5/faqs-development-environment-1-V5)的Node.js版本。
 
 ## 2.2 下载安装
@@ -56,6 +57,7 @@ SDK面向运算、存储能力较强的嵌入式终端设备，开发者通过�
 
 - 为方便用户体验，以下介绍SDK功能及Demo演示时，均使用烟感的产品模型，烟感会上报烟雾值，温度，湿度，烟雾报警，还支持响铃报警命令。
 - 您可以在[华为云设备接入](https://console.huaweicloud.com/iotdm)创建产品，将[烟感模型](https://iot-developer.obs.cn-north-4.myhuaweicloud.com:443/smokeDetector.zip)导入，并创建设备，体验以下功能。
+- Demo均可以使用模拟器运行，可参考[使用模拟器运行应用/元服务](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/ide-run-emulator-V5)。
 
 <h2 id="3.0">设备初始化</h2>
 
