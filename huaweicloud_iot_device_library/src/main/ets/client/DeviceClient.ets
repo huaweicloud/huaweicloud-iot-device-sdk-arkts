@@ -653,5 +653,4 @@ export class DeviceClient {
       persistenceType: 1
     })
   }
-
 }

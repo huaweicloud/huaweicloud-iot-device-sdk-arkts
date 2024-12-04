@@ -18,6 +18,7 @@ import { IoTDevice, IoTMqttResponse, RawMessageListener,
 } from '@huaweicloud/iot-device-sdk';
 import { ScrollerLogComponent } from './components/ScrollerLog';
 import { LogUtil } from './utils/LogUtil';
+import { ExceptionPrompt, MarginType, PromptOptions } from '@kit.ArkUI';
 
 @Builder
 export function MessageSampleBuilder(name: string, para: object) {
@@ -39,9 +40,22 @@ struct MessageSample {
 
   @State message: string = "";
   @State logArr: string[] = [];
+  @State isReconnecting: boolean = false;
+  @State options: PromptOptions = {
+    icon: $r('sys.media.ohos_ic_public_fail'),
+    tip: $r('app.string.reconnecting'),
+    marginType: MarginType.DEFAULT_MARGIN,
+    marginTop: 0,
+    isShown:true
+  }
 
   build() {
     NavDestination() {
+      if (this.isReconnecting) {
+        ExceptionPrompt({
+          options: this.options
+        })
+      }
       Column({ space: COLUMN_SPACE }) {
         Text($r('app.string.try_message_title'))
           .margin({ top: 10 })
@@ -57,6 +71,7 @@ struct MessageSample {
         Button($r('app.string.report_system_topic_message'))
           .width(300)
           .margin({ top: 10 })
+          .enabled(!this.isReconnecting)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               this.logArr.unshift(`${new Date()}: mqtt not connect`)
@@ -89,6 +104,7 @@ struct MessageSample {
         Button($r('app.string.report_custom_topic_message'))
           .width(300)
           .margin({ top: 10 })
+          .enabled(!this.isReconnecting)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               this.logArr.unshift(`${new Date()}: mqtt not connect`)
@@ -103,8 +119,6 @@ struct MessageSample {
                 LogUtil.log(TAG, `onMessageReceived message is ${JSON.stringify(rawMessage)}`);
               }
             }
-            // 设置连接监听器，断线重连处理以及重新连接成功处理
-            this.device.client.connectionListener = this.getConnectionListener();
 
             const rawMessage: RawMessage = {
               topic: topic,
@@ -129,6 +143,7 @@ struct MessageSample {
         Button($r('app.string.report_custom_oc_topic_message'))
           .width(300)
           .margin({ top: 10 })
+          .enabled(!this.isReconnecting)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
               this.logArr.unshift(`${new Date()}: mqtt not connect`)
@@ -142,9 +157,6 @@ struct MessageSample {
                 LogUtil.info(TAG, `onMessageReceived message is ${JSON.stringify(rawMessage)}`);
               }
             }
-
-            // 设置连接监听器，断线重连处理以及重新连接成功处理
-            this.device.client.connectionListener = this.getConnectionListener();
 
             const rawMessage: RawMessage = {
               topic: topic,
@@ -171,9 +183,12 @@ struct MessageSample {
       .height('100%')
       .width('100%')
     }
+    .hideTitleBar(this.isReconnecting)
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("messageSample")[0] as IoTDevice;
+      // 设置连接监听器，断线重连处理以及重新连接成功处理
+      this.device.client.connectionListener = this.getConnectionListener();
     })
   }
 
@@ -189,10 +204,13 @@ struct MessageSample {
     let connectionListener: ConnectListener = {
       connectionLost: (): void => {
         // 断线后有默认处理，也可以增加自己的处理逻辑
+        this.isReconnecting = true;
         LogUtil.error(TAG, `connectionLost`);
-        this.logArr.unshift(`${new Date()}: connectionLost`);
+        this.logArr.unshift(`${new Date()}: connectionLost, reconnecting`);
       },
       connectComplete: (): void => {
+        this.isReconnecting = false;
+        this.logArr.unshift(`${new Date()}: reconnect success`);
         // 连接成功后，自动重新订阅Topic
         if (!this.ocTopicListener && !this.helloWorldTopicListener) {
           this.logArr.unshift(`${new Date()}: no need to resubscribe`)
