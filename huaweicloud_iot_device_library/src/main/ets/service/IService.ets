@@ -51,5 +51,5 @@ export interface IService {
    * @param deviceEvent 事件
    */
   onEvent(deviceEvent: DeviceEvent): void;
-
 }
+

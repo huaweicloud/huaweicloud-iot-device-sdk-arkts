@@ -25,3 +25,4 @@ export interface ShadowListener {
    */
   onShadow: (requestId: string, shadowDataList?: ShadowData[]) => void;
 }
+

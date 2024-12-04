@@ -18,7 +18,6 @@ import { ServiceProperty } from "../../requests/ServiceProperty";
  * 属性监听器，用于接收平台下发的属性读写操作
  */
 export interface PropertyListener {
-
   /**
    * 处理写属性操作
    *
@@ -35,3 +34,4 @@ export interface PropertyListener {
    */
   onPropertiesGet: (requestId: string, serviceId?: string) => void;
 }
+

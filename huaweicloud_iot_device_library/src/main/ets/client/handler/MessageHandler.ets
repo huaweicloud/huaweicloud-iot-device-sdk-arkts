@@ -34,6 +34,5 @@ export class MessageHandler implements MessageReceivedHandler {
       LogUtil.log(`receive message ${JSON.stringify(message)}`)
       this.deviceClient.rawDeviceMessageListener.onRawDeviceMessage(rawDeviceMessage);
     }
-
   }
 }

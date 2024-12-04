@@ -16,7 +16,9 @@ import { IoTDevice, IoTMqttResponse, RawMessageListener,
   DeviceMessage, RawMessage, RawDeviceMessageListener, RawDeviceMessage,
   ConnectListener
 } from '@huaweicloud/iot-device-sdk';
+import { ScrollerLogComponent } from './components/ScrollerLog';
 import { LogUtil } from './utils/LogUtil';
+import { ExceptionPrompt, MarginType, PromptOptions } from '@kit.ArkUI';
 
 @Builder
 export function MessageSampleBuilder(name: string, para: object) {
@@ -33,15 +35,27 @@ struct MessageSample {
   private device: IoTDevice | null = null;
   private isSubscribeHelloWorldTopic = false;
   private isSubscribeOCTopic = false;
-  private scroller: Scroller = new Scroller(); // 创建一个滚动控制器
   private helloWorldTopicListener: RawMessageListener | null = null;
   private ocTopicListener: RawMessageListener | null = null;
 
   @State message: string = "";
   @State logArr: string[] = [];
+  @State isReconnecting: boolean = false;
+  @State options: PromptOptions = {
+    icon: $r('sys.media.ohos_ic_public_fail'),
+    tip: $r('app.string.reconnecting'),
+    marginType: MarginType.DEFAULT_MARGIN,
+    marginTop: 0,
+    isShown:true
+  }
 
   build() {
     NavDestination() {
+      if (this.isReconnecting) {
+        ExceptionPrompt({
+          options: this.options
+        })
+      }
       Column({ space: COLUMN_SPACE }) {
         Text($r('app.string.try_message_title'))
           .margin({ top: 10 })
@@ -57,8 +71,10 @@ struct MessageSample {
         Button($r('app.string.report_system_topic_message'))
           .width(300)
           .margin({ top: 10 })
+          .enabled(!this.isReconnecting)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
+              this.logArr.unshift(`${new Date()}: mqtt not connect`)
               LogUtil.info(TAG, "mqtt not connect")
               return;
             }
@@ -88,8 +104,10 @@ struct MessageSample {
         Button($r('app.string.report_custom_topic_message'))
           .width(300)
           .margin({ top: 10 })
+          .enabled(!this.isReconnecting)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
+              this.logArr.unshift(`${new Date()}: mqtt not connect`)
               LogUtil.info(TAG, "mqtt not connect")
               return;
             }
@@ -101,8 +119,6 @@ struct MessageSample {
                 LogUtil.log(TAG, `onMessageReceived message is ${JSON.stringify(rawMessage)}`);
               }
             }
-            // 设置连接监听器，断线重连处理以及重新连接成功处理
-            this.device.client.connectionListener = this.getConnectionListener();
 
             const rawMessage: RawMessage = {
               topic: topic,
@@ -127,8 +143,10 @@ struct MessageSample {
         Button($r('app.string.report_custom_oc_topic_message'))
           .width(300)
           .margin({ top: 10 })
+          .enabled(!this.isReconnecting)
           .onClick(async () => {
             if (!this.device?.client || !await this.device?.client.isConnected()) {
+              this.logArr.unshift(`${new Date()}: mqtt not connect`)
               LogUtil.info(TAG, "mqtt not connect")
               return;
             }
@@ -139,9 +157,6 @@ struct MessageSample {
                 LogUtil.info(TAG, `onMessageReceived message is ${JSON.stringify(rawMessage)}`);
               }
             }
-
-            // 设置连接监听器，断线重连处理以及重新连接成功处理
-            this.device.client.connectionListener = this.getConnectionListener();
 
             const rawMessage: RawMessage = {
               topic: topic,
@@ -163,43 +178,17 @@ struct MessageSample {
             })
           })
 
-        Scroll(this.scroller) {                  // 绑定滚动控制器
-          Column() {
-            ForEach(this.logArr, (log: string) => {      // ForEach语法循环创建子组件
-              Text(log)
-                .fontSize(12)
-                .width('98%')
-                .borderRadius(10)
-                .backgroundColor(Color.White)
-                .margin({top: 10})
-            })
-          }
-          .width("100%")
-        }
-        .scrollable(ScrollDirection.Vertical)    // 设置竖直方向滚动
-        .scrollBarColor(Color.Gray)             // 设置滚动条颜色
-        .scrollBarWidth(10)                      // 设置滚动条宽度
-        .scrollBar(BarState.On)                  // 设置滚动条永久显示
-        .width('100%')
-        .height(220)
-        .padding({top: 10, bottom: 10})
-        .border({ width: 0.5 })
-
-        if (this.logArr.length > 0) {
-          Button($r('app.string.clear_log'))
-            .width(300)
-            .margin({ top: 10 })
-            .onClick(() => {
-              this.logArr = []
-            })
-        }
+        ScrollerLogComponent({logArr: this.logArr})
       }
       .height('100%')
       .width('100%')
     }
+    .hideTitleBar(this.isReconnecting)
     .onReady((context: NavDestinationContext) => {
       this.pageInfos = context.pathStack;
       this.device = this.pageInfos.getParamByName("messageSample")[0] as IoTDevice;
+      // 设置连接监听器，断线重连处理以及重新连接成功处理
+      this.device.client.connectionListener = this.getConnectionListener();
     })
   }
 
@@ -215,10 +204,13 @@ struct MessageSample {
     let connectionListener: ConnectListener = {
       connectionLost: (): void => {
         // 断线后有默认处理，也可以增加自己的处理逻辑
+        this.isReconnecting = true;
         LogUtil.error(TAG, `connectionLost`);
-        this.logArr.unshift(`${new Date()}: connectionLost`);
+        this.logArr.unshift(`${new Date()}: connectionLost, reconnecting`);
       },
       connectComplete: (): void => {
+        this.isReconnecting = false;
+        this.logArr.unshift(`${new Date()}: reconnect success`);
         // 连接成功后，自动重新订阅Topic
         if (!this.ocTopicListener && !this.helloWorldTopicListener) {
           this.logArr.unshift(`${new Date()}: no need to resubscribe`)
