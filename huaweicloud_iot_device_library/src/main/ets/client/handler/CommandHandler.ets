@@ -28,7 +28,6 @@ export class CommandHandler implements MessageReceivedHandler {
 
   messageHandler(message: RawMessage): void {
     const requestId = IoTUtil.getRequestId(message.topic);
-
     try {
       const command: Command = JSON.parse(message.payload);
       const commandListener = this.deviceClient.commandListener;
@@ -37,12 +36,10 @@ export class CommandHandler implements MessageReceivedHandler {
         commandListener.onCommand(requestId, command.service_id, command.command_name, command.paras);
         return;
       }
-
       this.deviceClient.device.onCommand(requestId, command);
     } catch (e) {
       LogUtil.error("invalid command");
       return;
     }
-
   }
 }

@@ -37,12 +37,10 @@ export class ShadowHandler implements MessageReceivedHandler {
         shadowListener.onShadow(requestId, shadow.shadow);
         return;
       }
-
       this.deviceClient.device.onShadow(requestId, shadow);
     } catch (e) {
       LogUtil.error("invalid shadow");
       return;
     }
-
   }
 }
