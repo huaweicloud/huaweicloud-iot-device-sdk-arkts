@@ -27,5 +27,4 @@ export interface PropsSet {
    * 设备服务数据列表
    */
   services: ServiceProperty[];
-
 }

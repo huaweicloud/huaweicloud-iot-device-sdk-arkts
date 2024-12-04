@@ -37,12 +37,10 @@ export class PropertySetHandler implements MessageReceivedHandler {
         propertyListener.onPropertiesSet(requestId, propsSet.services);
         return;
       }
-
       this.deviceClient.device.onPropertiesSet(requestId, propsSet);
     } catch (e) {
       LogUtil.error("invalid propsSet");
       return;
     }
-
   }
 }

@@ -16,7 +16,6 @@
  * 读属性操作
  */
 export interface PropsGet {
-
   /**
    * 设备ID，直连设备时不懈怠该参数
    */

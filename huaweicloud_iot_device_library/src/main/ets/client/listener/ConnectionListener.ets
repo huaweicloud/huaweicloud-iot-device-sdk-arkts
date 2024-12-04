@@ -26,5 +26,5 @@ export interface ConnectListener {
    * 连接成功通知
    */
   connectComplete: () => void;
-
 }
+

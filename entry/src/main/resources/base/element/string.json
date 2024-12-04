@@ -30,7 +30,7 @@
     },
     {
       "name": "input_serverUri_placeholder",
-      "value": "input your serverUri"
+      "value": "input your serverUri, ssl://xxx:8883"
     },
     {
       "name": "connect_success_title",
@@ -151,6 +151,10 @@
     {
       "name": "disable_auto_report",
       "value": "Disable Auto Report"
+    },
+    {
+      "name": "reconnecting",
+      "value": "Connection lost, reconnecting..."
     }
   ]
 }

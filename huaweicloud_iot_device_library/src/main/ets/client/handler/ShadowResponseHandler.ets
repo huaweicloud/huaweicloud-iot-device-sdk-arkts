@@ -25,7 +25,5 @@ export class ShadowResponseHandler implements MessageReceivedHandler {
   }
 
   messageHandler(message: RawMessage): void {
-
-
   }
 }

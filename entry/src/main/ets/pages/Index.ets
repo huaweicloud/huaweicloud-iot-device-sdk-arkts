@@ -51,6 +51,7 @@ struct Index {
           Button($r('app.string.iotda_connect'))
             .width(300)
             .margin({ top: 20 })
+            .enabled(this.isInputValid())
             .onClick(async () => {
               LogUtil.debug(TAG, "click mqtt connect button");
               this.isConnecting = true;
@@ -91,5 +92,15 @@ struct Index {
       }
     }
     .title($r('app.string.iotda_title'))
+  }
+
+  private isInputValid(): boolean {
+    if (!this.serverUri || !this.deviceId || !this.deviceSecret) {
+      return false;
+    }
+    if (!this.serverUri.startsWith("ssl://") && !this.serverUri.startsWith("tcp://")) {
+      return false;
+    }
+    return true;
   }
 }

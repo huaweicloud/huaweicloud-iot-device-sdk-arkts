@@ -30,7 +30,7 @@
     },
     {
       "name": "input_serverUri_placeholder",
-      "value": "请输入连接地址及端口"
+      "value": "请输入连接地址及端口，ssl://xxx:8883"
     },
     {
       "name": "connect_success_title",
@@ -151,6 +151,10 @@
     {
       "name": "disable_auto_report",
       "value": "取消自动上报"
+    },
+    {
+      "name": "reconnecting",
+      "value": "连接断开，正在重连..."
     }
   ]
 }

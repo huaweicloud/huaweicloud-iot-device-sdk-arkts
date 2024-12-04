@@ -37,12 +37,10 @@ export class PropertyGetHandler implements MessageReceivedHandler {
         propertyListener.onPropertiesGet(requestId, propsGet.service_id);
         return;
       }
-
       this.deviceClient.device.onPropertiesGet(requestId, propsGet);
     } catch (e) {
       LogUtil.error("invalid propsGet");
       return;
     }
-
   }
 }
