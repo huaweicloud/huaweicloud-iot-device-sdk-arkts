@@ -5,6 +5,15 @@
   "main": "index.ets",
   "author": "",
   "license": "Apache-2.0",
+  "repository": "https://github.com/huaweicloud/huaweicloud-iot-device-sdk-arkts",
+  "keywords": [
+    "mqtt",
+    "mqtts",
+    "iot",
+    "iotda",
+    "OpenHarmony",
+    "HarmonyOS"
+  ],
   "dependencies": {
     "@ohos/mqtt": "^2.0.14",
     "@ohos/crypto-js": "^2.0.4",
