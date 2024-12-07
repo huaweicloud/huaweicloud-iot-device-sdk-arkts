@@ -1,7 +1,7 @@
 {
   "name": "@huaweicloud/iot-device-sdk",
   "version": "0.0.1",
-  "description": "Please describe the basic information.",
+  "description": "Huawei Cloud IoT Device SDK, API 12+",
   "main": "index.ets",
   "author": "Huawei Cloud IoT",
   "license": "Apache-2.0",
