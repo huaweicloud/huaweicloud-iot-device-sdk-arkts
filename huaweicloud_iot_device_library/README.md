@@ -166,7 +166,7 @@ device.customOptions: CustomOptions = customOptions;
     })
   ```
 
-- 上报自定topic消息（可用设备topic策略控制权限）
+- 上报自定义topic消息（非$oc开头，可用设备topic策略控制权限）
 
   ```arkts
   const topic = "hello/world";
@@ -186,7 +186,7 @@ device.customOptions: CustomOptions = customOptions;
 
 
 
-- 上报自定义topic消息（注意需要先在平台配置自定义topic）
+- 上报自定义topic消息（$oc开头，注意需要先在平台配置自定义topic）
 
   ```arkts
   const topic = `$oc/devices/${this.device?.deviceId}/user/test`;

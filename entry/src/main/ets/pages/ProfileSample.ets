@@ -51,7 +51,7 @@ struct ProfileSample {
             const smokeDetector = new SmokeDetector();
             this.device.addService("smokeDetector", smokeDetector);
             // 启动自动上报
-            smokeDetector.enableAutoReport(10000);
+            this.device.getService("smokeDetector")?.enableAutoReport(10000);
             this.logArr.unshift(`${new Date()}: add service success and enable auto report`)
           })
 
@@ -66,7 +66,7 @@ struct ProfileSample {
               return;
             }
             // 取消自动上报
-            this.device.services.get('smokeDetector')?.disableAutoReport();
+            this.device.getService("smokeDetector")?.disableAutoReport();
             this.isEnableAutoReport = false;
             this.logArr.unshift(`${new Date()}: disable auto report success`)
           })
