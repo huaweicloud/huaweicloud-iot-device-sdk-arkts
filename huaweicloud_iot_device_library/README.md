@@ -453,7 +453,7 @@ method对应接收命令的处理方法，命令的入参和返回值类型固�
 
 启动服务属性自动周期上报
 ```arkts
-   smokeDetector.enableAutoReport(10000);
+    this.device.getService("smokeDetector")?.enableAutoReport(10000);
 ```
 
 ## 4. License

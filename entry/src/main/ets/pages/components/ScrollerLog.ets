@@ -49,7 +49,7 @@ export struct ScrollerLogComponent {
           .width(300)
           .margin({ top: 10 })
           .onClick(() => {
-            this.logArr = []
+            this.logArr.length = 0;
           })
       }
     }
